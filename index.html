@@ -14,7 +14,6 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
       rel="stylesheet"
     />
-
     <style>
       :root {
         --primary: #0a1f44;
@@ -260,7 +259,7 @@
 
       /* CONTACT SECTION */
       .premium-contact {
-        background: rgb(137 156 181 / 96%);
+        background: rgba(4, 19, 40, 0.96);
         color: #fff;
         padding-top: 100px;
         margin-top: 80px;
@@ -386,6 +385,30 @@
           font-size: 2.5rem;
         }
       }
+      /* Price Styling */
+      .price-container {
+        margin: 10px 0;
+      }
+      .original-price {
+        text-decoration: line-through;
+        color: #888;
+        font-size: 0.9rem;
+        margin-right: 10px;
+      }
+      .discount-price {
+        color: #e63946; /* Red color for price */
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .discount-badge {
+        background: #28a745;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        vertical-align: middle;
+        margin-left: 5px;
+      }
     </style>
   </head>
 
@@ -429,54 +452,199 @@
     </section>
 
     <!-- COURSES -->
+    <!-- COURSES -->
     <section id="courses">
       <h2 class="title">Our Professional Courses</h2>
+
       <div class="courses">
+        <!-- CCC -->
         <div class="card">
-          <span class="card-icon">💻</span>
+          <div class="card-icon">💻</div>
           <h3>CCC</h3>
-          <p class="course-info">3 Months | Beginner</p>
-          <p>Government Certified Computer Course.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <p class="course-info">Duration: 3 Months | Level: Beginner</p>
+          <div class="price-container">
+            <span class="original-price">₹3,500</span>
+            <span class="discount-price">₹2,499</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Government Certified Computer Course</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
+
+        <!-- O Level -->
         <div class="card">
-          <span class="card-icon">🎓</span>
+          <div class="card-icon">🎓</div>
           <h3>O Level</h3>
-          <p class="course-info">1 Year | Advanced</p>
-          <p>NIELIT Government Certification Program.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <p class="course-info">Duration: 1 Year | Level: Advanced</p>
+          <div class="price-container">
+            <span class="original-price">₹15,000</span>
+            <span class="discount-price">₹12,000</span>
+            <span class="discount-badge">20% OFF</span>
+          </div>
+          <p>NIELIT Government Certification Program</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
+
+        <!-- DCA -->
         <div class="card">
-          <span class="card-icon">🚀</span>
+          <div class="card-icon">🖥</div>
+          <h3>DCA</h3>
+          <p class="course-info">Duration: 6 Months | Level: Beginner</p>
+          <div class="price-container">
+            <span class="original-price">₹6,000</span>
+            <span class="discount-price">₹4,500</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Diploma in Computer Applications</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- ADCA -->
+        <div class="card">
+          <div class="card-icon">🚀</div>
           <h3>ADCA</h3>
-          <p class="course-info">1 Year | Advanced</p>
-          <p>Advanced Diploma with Live Projects.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <p class="course-info">Duration: 1 Year | Level: Advanced</p>
+          <div class="price-container">
+            <span class="original-price">₹12,000</span>
+            <span class="discount-price">₹8,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Advanced Diploma with Live Projects</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
+
+        <!-- Tally Prime + GST -->
         <div class="card">
-          <span class="card-icon">📊</span>
-          <h3>Tally Prime</h3>
-          <p class="course-info">4 Months | Job Oriented</p>
-          <p>Complete Accounting & GST Training.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <div class="card-icon">📊</div>
+          <h3>Tally Prime + GST</h3>
+          <p class="course-info">Duration: 4 Months | Job Oriented</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Complete Accounting & Taxation Training</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
+
+        <!-- Web Development -->
         <div class="card">
-          <span class="card-icon">🌐</span>
-          <h3>Web Dev</h3>
-          <p class="course-info">6 Months | Tech</p>
-          <p>HTML, CSS, JS & Modern Frameworks.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <div class="card-icon">🌐</div>
+          <h3>Web Development</h3>
+          <p class="course-info">Duration: 6 Months | Live Projects</p>
+          <div class="price-container">
+            <span class="original-price">₹10,000</span>
+            <span class="discount-price">₹7,500</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>HTML, CSS, JavaScript & Website Projects</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
+
+        <!-- Graphic Designing -->
         <div class="card">
-          <span class="card-icon">🐍</span>
-          <h3>Python</h3>
-          <p class="course-info">5 Months | Coding</p>
-          <p>Programming from Basic to Advanced.</p>
-          <a href="#" class="enroll-btn">Enroll Now</a>
+          <div class="card-icon">🎨</div>
+          <h3>Graphic Designing</h3>
+          <p class="course-info">Duration: 4 Months | Creative Field</p>
+          <div class="price-container">
+            <span class="original-price">₹7,000</span>
+            <span class="discount-price">₹4,999</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Photoshop, CorelDraw & Canva</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Python Programming -->
+        <div class="card">
+          <div class="card-icon">🐍</div>
+          <h3>Python Programming</h3>
+          <p class="course-info">Duration: 5 Months | Coding</p>
+          <div class="price-container">
+            <span class="original-price">₹9,000</span>
+            <span class="discount-price">₹6,499</span>
+            <span class="discount-badge">28% OFF</span>
+          </div>
+          <p>Programming from Basic to Advanced</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Digital Marketing -->
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3>Digital Marketing</h3>
+          <p class="course-info">Duration: 3 Months | Online Career</p>
+          <div class="price-container">
+            <span class="original-price">₹6,000</span>
+            <span class="discount-price">₹3,999</span>
+            <span class="discount-badge">33% OFF</span>
+          </div>
+          <p>SEO, Social Media & Google Ads</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Typing Course -->
+        <div class="card">
+          <div class="card-icon">⌨</div>
+          <h3>Typing Course</h3>
+          <p class="course-info">Duration: 2 Months | Practice Based</p>
+          <div class="price-container">
+            <span class="original-price">₹2,000</span>
+            <span class="discount-price">₹1,200</span>
+            <span class="discount-badge">40% OFF</span>
+          </div>
+          <p>Hindi & English Typing Training</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Hardware & Networking -->
+        <div class="card">
+          <div class="card-icon">🔧</div>
+          <h3>Hardware & Networking</h3>
+          <p class="course-info">Duration: 6 Months | Technical</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,500</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Computer Repairing & Networking</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
         </div>
       </div>
     </section>
-
     <!-- GALLERY -->
     <section id="gallery">
       <h2 class="title">Campus Gallery</h2>
@@ -552,7 +720,11 @@
                   target="_blank"
                   style="color: #fff"
                 >
-                  SDM Court, Noorpur Road, Dhampur (U.P.)</a
+                  <b>RICS Computer Training Center</b>
+                  <br />
+                  2nd Floor, Rajendra Tower, SDM Court,
+                  <br />
+                  Noorpur Road, Dhampur (U.P.)</a
                 >
               </p>
             </div>
@@ -619,6 +791,34 @@
           <div class="input-group" style="border: 1px solid #ddd">
             <input type="text" name="Name" placeholder="Full Name" required />
           </div>
+          <!-- YAHAN DROPDOWN HAI -->
+          <div class="input-group" style="border: 1px solid #ddd">
+            <select
+              name="Course"
+              required
+              style="
+                width: 100%;
+                border: none;
+                outline: none;
+                background: transparent;
+              "
+            >
+              <option value="" disabled selected>Select Course</option>
+              <option value="CCC">CCC</option>
+              <option value="O Level">O Level</option>
+              <option value="DCA">DCA</option>
+              <option value="ADCA">ADCA</option>
+              <option value="Tally Prime + GST">Tally Prime + GST</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Graphic Designing">Graphic Designing</option>
+              <option value="Python Programming">Python Programming</option>
+              <option value="Digital Marketing">Digital Marketing</option>
+              <option value="Typing Course">Typing Course</option>
+              <option value="Hardware & Networking">
+                Hardware & Networking
+              </option>
+            </select>
+          </div>
           <div class="input-group" style="border: 1px solid #ddd">
             <input
               type="text"
@@ -674,7 +874,7 @@
 
           fetch(scriptURL, { method: "POST", body: new FormData(contactForm) })
             .then((response) => {
-              alert("Message sent successfully to Rohit!");
+              alert("Message sent successfully to us!");
               contactForm.reset();
               contactBtn.innerHTML = "Send Message";
             })
