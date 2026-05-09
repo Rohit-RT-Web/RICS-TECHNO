@@ -1,14 +1,16 @@
 // ============================================
 //  RICS ADMIN PANEL - admin.js
-//  Existing code ko touch nahi kiya,
-//  sirf localStorage-based course management
+//  Google Sheets se connected
 // ============================================
 
-// ===== ADMIN CREDENTIALS (Change karo apne hisaab se) =====
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwpT9ooXSAKW7-XEmSdJAzq24-3GWlyLCWcxou3Mgiy6Qp6lSabo34ODRSDM7g7uLzQ/exec";
+
+// ===== ADMIN CREDENTIALS =====
 const ADMIN_USER = "rics_admin";
 const ADMIN_PASS = "rics@2026";
 
-// ===== DEFAULT COURSES (index.html se match karte hain) =====
+// ===== DEFAULT COURSES (pehli baar sheet empty ho tab) =====
 const DEFAULT_COURSES = [
   {
     id: 1,
@@ -164,26 +166,74 @@ const DEFAULT_COURSES = [
 
 // ===== STATE =====
 let courses = [];
-let editingId = null; // null = add mode, number = edit mode
+let editingId = null;
 let deleteTargetId = null;
 let priceTargetId = null;
 
 // ===== INIT =====
 function init() {
-  // localStorage se courses lo, agar nahi hain toh default
-  const saved = localStorage.getItem("rics_courses");
-  if (saved) {
-    courses = JSON.parse(saved);
-  } else {
-    courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
-    saveToStorage();
-  }
-  renderTable();
-  updateStats();
+  showLoader(true);
+  fetchCoursesFromSheet();
 }
 
-function saveToStorage() {
-  localStorage.setItem("rics_courses", JSON.stringify(courses));
+// ===== LOADER =====
+function showLoader(show) {
+  const tbody = document.getElementById("courses-table-body");
+  if (show) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#aaa;">
+      <i class="fa fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+      Google Sheets se courses load ho rahe hain...
+    </td></tr>`;
+  }
+}
+
+// ===== FETCH COURSES FROM GOOGLE SHEETS =====
+function fetchCoursesFromSheet() {
+  fetch(SCRIPT_URL + "?action=getCourses")
+    .then((res) => res.json())
+    .then((data) => {
+      if (
+        data.result === "success" &&
+        data.courses &&
+        data.courses.length > 0
+      ) {
+        courses = data.courses.map((c) => ({
+          id: Number(c.id),
+          icon: c.icon,
+          title: c.title,
+          duration: c.duration,
+          level: c.level,
+          desc: c.desc,
+          origPrice: Number(c.origPrice),
+          discPrice: Number(c.discPrice),
+        }));
+      } else {
+        // Sheet empty hai - default courses load karo aur save bhi karo
+        courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+        saveAllDefaultToSheet();
+      }
+      renderTable();
+      updateStats();
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+      renderTable();
+      updateStats();
+      showToast(
+        "⚠️ Google Sheets connect nahi hua, default data dikh raha hai",
+        "error",
+      );
+    });
+}
+
+function saveAllDefaultToSheet() {
+  DEFAULT_COURSES.forEach((c) => {
+    fetch(SCRIPT_URL + "?action=saveCourse", {
+      method: "POST",
+      body: JSON.stringify(c),
+    }).catch((err) => console.error(err));
+  });
 }
 
 // ===== LOGIN =====
@@ -204,7 +254,6 @@ function adminLogin() {
   }
 }
 
-// Enter key se login
 document.addEventListener("keydown", (e) => {
   if (
     e.key === "Enter" &&
@@ -223,14 +272,11 @@ function adminLogout() {
 
 // ===== SIDEBAR NAVIGATION =====
 function showSection(sectionId, clickedLink) {
-  // Sabhi sections hide karo
   document
     .querySelectorAll(".panel-section")
     .forEach((s) => (s.style.display = "none"));
-  // Target section show karo
   document.getElementById(sectionId).style.display = "block";
 
-  // Active nav link update
   if (clickedLink) {
     document
       .querySelectorAll(".nav-item")
@@ -238,7 +284,6 @@ function showSection(sectionId, clickedLink) {
     clickedLink.classList.add("active");
   }
 
-  // Header update
   const titles = {
     "courses-section": [
       "Manage Courses",
@@ -254,7 +299,6 @@ function showSection(sectionId, clickedLink) {
     document.getElementById("page-subtitle").textContent = titles[sectionId][1];
   }
 
-  // Agar add section open hua, reset form
   if (sectionId === "add-section" && editingId === null) {
     resetForm();
   }
@@ -309,7 +353,7 @@ function updateStats() {
   document.getElementById("total-courses-count").textContent = courses.length;
 }
 
-// ===== ADD / EDIT COURSE =====
+// ===== SAVE COURSE =====
 function saveCourse() {
   const icon = document.getElementById("f-icon").value.trim() || "📚";
   const title = document.getElementById("f-title").value.trim();
@@ -320,75 +364,73 @@ function saveCourse() {
   const discPrice = parseInt(document.getElementById("f-disc").value);
 
   if (!title) {
-    alert("Course title zaroori hai!");
+    showToast("Course title zaroori hai!", "error");
     return;
   }
   if (!desc) {
-    alert("Description zaroori hai!");
+    showToast("Description zaroori hai!", "error");
     return;
   }
   if (!origPrice || !discPrice) {
-    alert("Dono prices enter karo!");
+    showToast("Dono prices enter karo!", "error");
     return;
   }
   if (discPrice >= origPrice) {
-    alert("Discounted price, original price se kam honi chahiye!");
+    showToast("Discount price, original se kam honi chahiye!", "error");
     return;
   }
 
+  const courseObj = {
+    icon,
+    title,
+    duration,
+    level,
+    desc,
+    origPrice,
+    discPrice,
+  };
+
   if (editingId !== null) {
-    // EDIT MODE
+    courseObj.id = editingId;
     const idx = courses.findIndex((c) => c.id === editingId);
-    if (idx !== -1) {
-      courses[idx] = {
-        ...courses[idx],
-        icon,
-        title,
-        duration,
-        level,
-        desc,
-        origPrice,
-        discPrice,
-      };
-    }
+    if (idx !== -1) courses[idx] = courseObj;
   } else {
-    // ADD MODE
-    const newId =
+    courseObj.id =
       courses.length > 0 ? Math.max(...courses.map((c) => c.id)) + 1 : 1;
-    courses.push({
-      id: newId,
-      icon,
-      title,
-      duration,
-      level,
-      desc,
-      origPrice,
-      discPrice,
-    });
+    courses.push(courseObj);
   }
 
-  saveToStorage();
-  renderTable();
-  updateStats();
-  showFormMsg(
-    editingId !== null
-      ? "✅ Course update ho gaya!"
-      : "✅ Naya course add ho gaya!",
-  );
-  editingId = null;
+  showFormMsg("⏳ Google Sheets mein save ho raha hai...");
 
-  // 1.5 sec baad courses section pe wapas jao
-  setTimeout(() => {
-    resetForm();
-    showSection("courses-section", document.querySelector(".nav-item"));
-  }, 1500);
+  fetch(SCRIPT_URL + "?action=saveCourse", {
+    method: "POST",
+    body: JSON.stringify(courseObj),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      renderTable();
+      updateStats();
+      showFormMsg(
+        editingId !== null
+          ? "✅ Course update ho gaya!"
+          : "✅ Naya course add ho gaya!",
+      );
+      editingId = null;
+      setTimeout(() => {
+        resetForm();
+        showSection("courses-section", document.querySelector(".nav-item"));
+      }, 1500);
+    })
+    .catch((err) => {
+      showToast("❌ Save nahi hua, internet check karo", "error");
+      console.error(err);
+    });
 }
 
 function editCourse(id) {
   const c = courses.find((x) => x.id === id);
   if (!c) return;
   editingId = id;
-
   document.getElementById("f-icon").value = c.icon || "";
   document.getElementById("f-title").value = c.title;
   document.getElementById("f-duration").value = c.duration;
@@ -398,7 +440,6 @@ function editCourse(id) {
   document.getElementById("f-disc").value = c.discPrice;
   document.getElementById("form-heading").innerHTML =
     `<i class="fa fa-pen"></i> Edit Course: ${c.title}`;
-
   showSection("add-section", null);
 }
 
@@ -443,14 +484,26 @@ function closeDeleteModal() {
 }
 function confirmDelete() {
   if (deleteTargetId === null) return;
-  courses = courses.filter((c) => c.id !== deleteTargetId);
-  saveToStorage();
-  renderTable();
-  updateStats();
-  closeDeleteModal();
+
+  fetch(SCRIPT_URL + "?action=deleteCourse", {
+    method: "POST",
+    body: JSON.stringify({ courseId: deleteTargetId }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      courses = courses.filter((c) => c.id !== deleteTargetId);
+      renderTable();
+      updateStats();
+      closeDeleteModal();
+      showToast("✅ Course delete ho gaya!", "success");
+    })
+    .catch((err) => {
+      showToast("❌ Delete nahi hua, internet check karo", "error");
+      console.error(err);
+    });
 }
 
-// ===== PRICE EDIT MODAL =====
+// ===== PRICE EDIT =====
 function openPriceModal(id) {
   const c = courses.find((x) => x.id === id);
   if (!c) return;
@@ -469,11 +522,11 @@ function confirmPriceUpdate() {
   const newOrig = parseInt(document.getElementById("pm-orig").value);
   const newDisc = parseInt(document.getElementById("pm-disc").value);
   if (!newOrig || !newDisc) {
-    alert("Dono prices enter karo!");
+    showToast("Dono prices enter karo!", "error");
     return;
   }
   if (newDisc >= newOrig) {
-    alert("Discounted price, original price se kam honi chahiye!");
+    showToast("Discount price, original se kam honi chahiye!", "error");
     return;
   }
 
@@ -481,10 +534,49 @@ function confirmPriceUpdate() {
   if (idx !== -1) {
     courses[idx].origPrice = newOrig;
     courses[idx].discPrice = newDisc;
+
+    fetch(SCRIPT_URL + "?action=saveCourse", {
+      method: "POST",
+      body: JSON.stringify(courses[idx]),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        renderTable();
+        closePriceModal();
+        showToast("✅ Price update ho gaya!", "success");
+      })
+      .catch((err) => {
+        showToast("❌ Update nahi hua, internet check karo", "error");
+        console.error(err);
+      });
   }
-  saveToStorage();
-  renderTable();
-  closePriceModal();
+}
+
+// ===== TOAST =====
+function showToast(message, type = "success") {
+  let toast = document.getElementById("admin-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "admin-toast";
+    toast.style.cssText = `
+      position:fixed; bottom:30px; right:30px; padding:14px 22px;
+      border-radius:12px; font-size:0.9rem; font-weight:600;
+      z-index:99999; box-shadow:0 8px 25px rgba(0,0,0,0.2);
+      transition:opacity 0.3s; font-family:'Poppins',sans-serif;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.background = type === "success" ? "#28a745" : "#e63946";
+  toast.style.color = "#fff";
+  toast.style.display = "block";
+  toast.style.opacity = "1";
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 300);
+  }, 3000);
 }
 
 // Modal background click se close

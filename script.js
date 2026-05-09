@@ -1,12 +1,10 @@
 // ============================================================
-//  RICS Technologies - script.js (Updated with Admin Sync)
-//  Purana code bilkul same hai, sirf courses section
-//  ab localStorage se dynamically render hota hai
+//  RICS Technologies - script.js
+//  Courses ab Google Sheets se load honge (har device par same)
 // ============================================================
 
-// APNA NAYA DEPLOYMENT URL YAHAN DALEIN
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbzqbFz6aF3me75hAZCujZUnPX1qGLbH21ejGn_hVXcj0sV1BspOyEa3cQ0kqvNYjyHE/exec";
+  "https://script.google.com/macros/s/AKfycbwpT9ooXSAKW7-XEmSdJAzq24-3GWlyLCWcxou3Mgiy6Qp6lSabo34ODRSDM7g7uLzQ/exec";
 
 // Performance Optimization: DOM Caching
 const admissionForm = document.getElementById("admission-form");
@@ -22,9 +20,8 @@ if (admissionForm) {
   admissionForm.addEventListener("submit", (e) => {
     e.preventDefault();
     admissionBtn.innerHTML = "Sending...";
-
     fetch(scriptURL, { method: "POST", body: new FormData(admissionForm) })
-      .then((response) => {
+      .then(() => {
         msg.style.display = "block";
         admissionForm.reset();
         admissionBtn.innerHTML = "Submit Inquiry";
@@ -45,9 +42,8 @@ if (contactForm) {
   contactForm.addEventListener("submit", (e) => {
     e.preventDefault();
     contactBtn.innerHTML = "Sending...";
-
     fetch(scriptURL, { method: "POST", body: new FormData(contactForm) })
-      .then((response) => {
+      .then(() => {
         alert("Message Sent Successfully!");
         contactForm.reset();
         contactBtn.innerHTML = "Send Message";
@@ -59,28 +55,24 @@ if (contactForm) {
   });
 }
 
-// --- 3. UI LOGIC (Optimized) ---
+// --- 3. POPUP ---
 function openPopup() {
   if (popupModal) popupModal.style.display = "flex";
 }
-
 function closePopup() {
   if (popupModal) popupModal.style.display = "none";
 }
 
-// Hero Background Slider (Optimized with Pre-loading)
+// --- 4. HERO BACKGROUND SLIDER ---
 const images = [
   "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1400&q=80",
   "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1400&q=80",
   "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
 ];
-
-// Images ko memory mein pre-load karna taaki performance badhe
 images.forEach((src) => {
   const img = new Image();
   img.src = src;
 });
-
 let currentIndex = 0;
 function changeBg() {
   if (heroSection) {
@@ -88,16 +80,13 @@ function changeBg() {
     currentIndex = (currentIndex + 1) % images.length;
   }
 }
-
 setInterval(changeBg, 5000);
 changeBg();
 
 // ============================================================
-//  NAYA CODE: Dynamic Course Rendering from Admin Panel
-//  (Ye courses section ko localStorage se sync karta hai)
+//  DYNAMIC COURSES - Google Sheets se load honge
 // ============================================================
 
-// Default courses (admin.js ke saath match karte hain)
 const DEFAULT_COURSES = [
   {
     id: 1,
@@ -251,21 +240,9 @@ const DEFAULT_COURSES = [
   },
 ];
 
-function getCourses() {
-  const saved = localStorage.getItem("rics_courses");
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch (e) {}
-  }
-  return DEFAULT_COURSES;
-}
-
-function renderCourses() {
+function renderCourses(courses) {
   const container = document.querySelector(".courses");
   if (!container) return;
-
-  const courses = getCourses();
   container.innerHTML = "";
 
   courses.forEach((c) => {
@@ -290,17 +267,14 @@ function renderCourses() {
     container.appendChild(card);
   });
 
-  // Admission form dropdown bhi update karo
-  updateAdmissionDropdown(courses);
+  updateDropdown(courses);
 }
 
-function updateAdmissionDropdown(courses) {
+function updateDropdown(courses) {
   const select = document.querySelector(
     '#admission-form select[name="Course"]',
   );
   if (!select) return;
-
-  // Pehle wale options hata do (default option rakhenge)
   select.innerHTML = `<option value="" disabled selected>Select Course</option>`;
   courses.forEach((c) => {
     const opt = document.createElement("option");
@@ -310,5 +284,29 @@ function updateAdmissionDropdown(courses) {
   });
 }
 
-// Page load hone par courses render karo
-document.addEventListener("DOMContentLoaded", renderCourses);
+// Google Sheets se courses fetch karo
+document.addEventListener("DOMContentLoaded", () => {
+  fetch(scriptURL + "?action=getCourses")
+    .then((res) => res.json())
+    .then((data) => {
+      if (
+        data.result === "success" &&
+        data.courses &&
+        data.courses.length > 0
+      ) {
+        const courses = data.courses.map((c) => ({
+          ...c,
+          origPrice: Number(c.origPrice),
+          discPrice: Number(c.discPrice),
+        }));
+        renderCourses(courses);
+      } else {
+        // Sheet empty hai ya error - default dikhaao
+        renderCourses(DEFAULT_COURSES);
+      }
+    })
+    .catch(() => {
+      // Network error - default courses dikhaao
+      renderCourses(DEFAULT_COURSES);
+    });
+});
