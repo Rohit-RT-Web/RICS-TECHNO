@@ -47,7 +47,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 15px 8%;
+        padding: 15px 3%;
         background: rgba(10, 31, 68, 0.96);
         backdrop-filter: blur(10px);
         z-index: 1000;
@@ -59,16 +59,117 @@
         font-size: 1.6rem;
         letter-spacing: 1px;
       }
+      /* Navbar Links Container */
       nav ul {
         display: flex;
         list-style: none;
-        gap: 30px;
+        gap: 35px; /* Thoda gap badhaya hai clean look ke liye */
+        align-items: center;
       }
+      /* Container for logo and text */
+      .nav-logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* Logo styling */
+      .nav-logo-img {
+        height: 60px; /* Aap isse bada ya chota kar sakte hain */
+        width: auto;
+        border-radius: 50%;
+        background: #ffffff;
+        padding: 2px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        object-fit: contain;
+      }
+
+      /* Wrapper for title and tagline */
+      .nav-text-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* Main title styling */
+      .nav-title {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 1.4rem;
+        line-height: 1.1;
+        margin: 0;
+        letter-spacing: 1px;
+      }
+
+      /* Tagline styling */
+      .nav-tagline {
+        color: #ffb400; /* Yellow/Gold color from your theme */
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+
+      /* Responsive adjustment for small screens */
+      @media (max-width: 768px) {
+        .nav-logo-img {
+          height: 45px;
+        }
+        .nav-title {
+          font-size: 1.1rem;
+        }
+        .nav-tagline {
+          font-size: 0.65rem;
+        }
+      }
+      /* Individual Link Style */
       nav a {
-        color: var(--white);
+        color: rgba(
+          255,
+          255,
+          255,
+          0.85
+        ); /* Default color thoda soft rakha hai */
         text-decoration: none;
         font-weight: 500;
-        transition: var(--transition);
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase; /* Links ko professional dikhane ke liye */
+        transition: all 0.3s ease;
+        position: relative; /* Niche wali line ke liye zaroori hai */
+        padding: 5px 0;
+      }
+
+      /* Hover Effect: Color Change */
+      nav a:hover {
+        color: var(--accent); /* Yellow/Gold color on hover */
+      }
+
+      /* Animated Underline on Hover */
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover::after {
+        width: 100%; /* Hover karne par line left to right draw hogi */
+      }
+
+      /* Mobile Screen Par Links thode bade dikhen */
+      @media (max-width: 768px) {
+        nav ul {
+          gap: 15px;
+        }
+        nav a {
+          font-size: 0.85rem;
+          letter-spacing: 0;
+        }
       }
       nav a:hover {
         color: var(--accent);
@@ -116,20 +217,46 @@
       }
 
       .btn {
-        background: var(--accent);
+        background: linear-gradient(135deg, #ffb400 0%, #ff9100 100%);
         color: #000;
-        padding: 14px 35px;
+        padding: 10px 18px;
         border: none;
         border-radius: 50px;
         cursor: pointer;
         font-weight: 700;
-        font-size: 1rem;
-        transition: var(--transition);
-        box-shadow: 0 5px 15px rgba(255, 180, 0, 0.3);
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 15px rgba(255, 180, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        outline: none;
+        /* Pulse Animation */
+        animation: pulse-orange 2s infinite;
       }
+
       .btn:hover {
-        background: var(--white);
-        transform: translateY(-3px);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 20px rgba(255, 180, 0, 0.5);
+        background: linear-gradient(135deg, #ffc107 0%, #ffb400 100%);
+      }
+
+      .btn:active {
+        transform: translateY(-1px);
+      }
+
+      /* Keyframes for the Pulse effect */
+      @keyframes pulse-orange {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 180, 0, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(255, 180, 0, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(255, 180, 0, 0);
+        }
       }
 
       /* SECTION COMMON */
@@ -347,23 +474,50 @@
         font-size: 20px;
       }
 
-      /* WHATSAPP FLOAT */
+      /* WHATSAPP FLOAT UPGRADED */
       .whatsapp {
         position: fixed;
         bottom: 30px;
         right: 30px;
-        background: #25d366;
+        background: linear-gradient(
+          135deg,
+          #25d366 0%,
+          #128c7e 100%
+        ); /* Premium Green Gradient */
         color: #fff;
-        width: 60px;
-        height: 60px;
+        width: 65px;
+        height: 65px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        font-size: 30px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        font-size: 32px;
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
         z-index: 999;
+        transition: all 0.3s ease;
+
+        /* Yahan wahi Pulse Animation hai */
+        animation: pulse-green 2s infinite;
+      }
+
+      .whatsapp:hover {
+        transform: scale(1.1) rotate(10deg); /* Hover par thoda ghoomega aur bada hoga */
+        box-shadow: 0 15px 30px rgba(37, 211, 102, 0.6);
+        filter: brightness(1.1);
+      }
+
+      /* Green Pulse Animation Keyframes */
+      @keyframes pulse-green {
+        0% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 20px rgba(37, 211, 102, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        }
       }
 
       footer {
@@ -414,7 +568,16 @@
 
   <body>
     <nav>
-      <h2>RICS Technologies</h2>
+      <div class="nav-logo-container">
+        <!-- Logo Image -->
+        <img src="logo.jpeg" alt="RICS Logo" class="nav-logo-img" />
+
+        <!-- Text Content -->
+        <div class="nav-text-wrapper">
+          <h2 class="nav-title">RICS Technologies</h2>
+          <span class="nav-tagline">Bright Future, Right Future</span>
+        </div>
+      </div>
       <ul>
         <li><a href="#hero">Home</a></li>
         <li><a href="#courses">Courses</a></li>
@@ -450,8 +613,6 @@
         </div>
       </div>
     </section>
-
-    <!-- COURSES -->
     <!-- COURSES -->
     <section id="courses">
       <h2 class="title">Our Professional Courses</h2>
@@ -643,6 +804,73 @@
             >Enroll Now</a
           >
         </div>
+        <!-- C & C++ Programming -->
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>C & C++ Programming</h3>
+          <p class="course-info">Duration: 4 Months | Foundation</p>
+          <div class="price-container">
+            <span class="original-price">₹5,000</span>
+            <span class="discount-price">₹3,499</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Learn Logic Building with C and OOPs with C++</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Core & Advanced Java -->
+        <div class="card">
+          <div class="card-icon">☕</div>
+          <h3>Java (Core + Advanced)</h3>
+          <p class="course-info">Duration: 6 Months | Backend</p>
+          <div class="price-container">
+            <span class="original-price">₹12,000</span>
+            <span class="discount-price">₹8,500</span>
+            <span class="discount-badge">29% OFF</span>
+          </div>
+          <p>Complete Java, Servlets, JSP & Frameworks</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Data Structures & Algorithms -->
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Data Structures (DSA)</h3>
+          <p class="course-info">Duration: 3 Months | Interview Prep</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Master Algorithms & Problem Solving Skills</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- MySQL Database -->
+        <div class="card">
+          <div class="card-icon">🗄️</div>
+          <h3>MySQL Database</h3>
+          <p class="course-info">Duration: 2 Months | Database</p>
+          <div class="price-container">
+            <span class="original-price">₹4,000</span>
+            <span class="discount-price">₹2,499</span>
+            <span class="discount-badge">37% OFF</span>
+          </div>
+          <p>SQL Queries, Database Design & Management</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
       </div>
     </section>
     <!-- GALLERY -->
@@ -776,7 +1004,7 @@
     <footer>&copy; 2026 RICS Technologies | All Rights Reserved</footer>
 
     <!-- WHATSAPP FLOAT -->
-    <a href="https://wa.me/919411232073" class="whatsapp"
+    <a href="https://wa.me/919411232073" class="whatsapp" target="_blank"
       ><i class="fab fa-whatsapp"></i
     ></a>
 
