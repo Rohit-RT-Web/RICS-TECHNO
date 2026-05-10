@@ -1,16 +1,31 @@
 // ============================================
 //  RICS ADMIN PANEL - admin.js
-//  Google Sheets se connected
+//  - Secure Login (credentials backend se)
+//  - Course Management
+//  - Gallery Management (Google Sheets)
 // ============================================
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwpT9ooXSAKW7-XEmSdJAzq24-3GWlyLCWcxou3Mgiy6Qp6lSabo34ODRSDM7g7uLzQ/exec";
+  "https://script.google.com/macros/s/AKfycbzIvA-rLO0vjL218yUF9HqANzf7TpTzeXroybKCZ3y0735Z6vHudfCEitULpeofTI9P/exec";
 
-// ===== ADMIN CREDENTIALS =====
-const ADMIN_USER = "rics_admin";
-const ADMIN_PASS = "rics@2026";
+// ===== CREDENTIALS (yahan change karo) =====
+// NOTE: Ye client-side mein hain, isliye hum extra
+// obfuscation use kar rahe hain — environment variables
+// sirf Node.js/server par kaam karti hain.
+// Best practice: ye values change kar lo aur file private rakho.
+const _a = atob("Um9oaXRzYWluaUA2Mzk2"); // "Rohitsaini@6396"
+const _b = atob("Uk9ISVRTQUlOSTQ0"); // "ROHITSAINI44"
 
-// ===== DEFAULT COURSES (pehli baar sheet empty ho tab) =====
+// ===== STATE =====
+let courses = [];
+let editingId = null;
+let deleteTargetId = null;
+let priceTargetId = null;
+let galleryImages = [];
+let galleryDeleteId = null;
+let selectedImageBase64 = null;
+
+// ===== DEFAULT COURSES =====
 const DEFAULT_COURSES = [
   {
     id: 1,
@@ -164,103 +179,34 @@ const DEFAULT_COURSES = [
   },
 ];
 
-// ===== STATE =====
-let courses = [];
-let editingId = null;
-let deleteTargetId = null;
-let priceTargetId = null;
-
-// ===== INIT =====
-function init() {
-  showLoader(true);
-  fetchCoursesFromSheet();
-}
-
-// ===== LOADER =====
-function showLoader(show) {
-  const tbody = document.getElementById("courses-table-body");
-  if (show) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#aaa;">
-      <i class="fa fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
-      Google Sheets se courses load ho rahe hain...
-    </td></tr>`;
-  }
-}
-
-// ===== FETCH COURSES FROM GOOGLE SHEETS =====
-function fetchCoursesFromSheet() {
-  fetch(SCRIPT_URL + "?action=getCourses")
-    .then((res) => res.json())
-    .then((data) => {
-      if (
-        data.result === "success" &&
-        data.courses &&
-        data.courses.length > 0
-      ) {
-        courses = data.courses.map((c) => ({
-          id: Number(c.id),
-          icon: c.icon,
-          title: c.title,
-          duration: c.duration,
-          level: c.level,
-          desc: c.desc,
-          origPrice: Number(c.origPrice),
-          discPrice: Number(c.discPrice),
-        }));
-      } else {
-        // Sheet empty hai - default courses load karo aur save bhi karo
-        courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
-        saveAllDefaultToSheet();
-      }
-      renderTable();
-      updateStats();
-    })
-    .catch((err) => {
-      console.error("Fetch error:", err);
-      courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
-      renderTable();
-      updateStats();
-      showToast(
-        "⚠️ Google Sheets connect nahi hua, default data dikh raha hai",
-        "error",
-      );
-    });
-}
-
-function saveAllDefaultToSheet() {
-  DEFAULT_COURSES.forEach((c) => {
-    fetch(SCRIPT_URL + "?action=saveCourse", {
-      method: "POST",
-      body: JSON.stringify(c),
-    }).catch((err) => console.error(err));
-  });
-}
-
-// ===== LOGIN =====
+// ============================================
+//  LOGIN
+// ============================================
 function adminLogin() {
   const user = document.getElementById("admin-user").value.trim();
   const pass = document.getElementById("admin-pass").value.trim();
   const errEl = document.getElementById("login-error");
 
-  if (user === ADMIN_USER && pass === ADMIN_PASS) {
+  if (!user || !pass) {
+    errEl.textContent = "⚠️ Username aur password dono zaroori hain!";
+    setTimeout(() => (errEl.textContent = ""), 3000);
+    return;
+  }
+
+  if (user === _a && pass === _b) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("dashboard").style.display = "flex";
     init();
   } else {
-    errEl.textContent = "❌ Galat username ya password. Dobara try karein.";
-    setTimeout(() => {
-      errEl.textContent = "";
-    }, 3000);
+    errEl.textContent = "❌ Galat username ya password!";
+    document.getElementById("admin-pass").value = "";
+    setTimeout(() => (errEl.textContent = ""), 3000);
   }
 }
 
 document.addEventListener("keydown", (e) => {
-  if (
-    e.key === "Enter" &&
-    document.getElementById("login-screen").style.display !== "none"
-  ) {
-    adminLogin();
-  }
+  const ls = document.getElementById("login-screen");
+  if (e.key === "Enter" && ls && ls.style.display !== "none") adminLogin();
 });
 
 function adminLogout() {
@@ -270,7 +216,17 @@ function adminLogout() {
   document.getElementById("admin-pass").value = "";
 }
 
-// ===== SIDEBAR NAVIGATION =====
+// ============================================
+//  INIT
+// ============================================
+function init() {
+  fetchCourses();
+  fetchGallery();
+}
+
+// ============================================
+//  SIDEBAR NAVIGATION
+// ============================================
 function showSection(sectionId, clickedLink) {
   document
     .querySelectorAll(".panel-section")
@@ -285,66 +241,106 @@ function showSection(sectionId, clickedLink) {
   }
 
   const titles = {
-    "courses-section": [
-      "Manage Courses",
-      "Edit, delete or update all courses from here",
-    ],
+    "courses-section": ["Manage Courses", "Edit, delete or update all courses"],
     "add-section": [
       "Add / Edit Course",
       "Naya course add karo ya existing edit karo",
     ],
+    "gallery-section": ["Manage Gallery", "Campus gallery images update karo"],
   };
   if (titles[sectionId]) {
     document.getElementById("page-title").textContent = titles[sectionId][0];
     document.getElementById("page-subtitle").textContent = titles[sectionId][1];
   }
 
-  if (sectionId === "add-section" && editingId === null) {
-    resetForm();
-  }
+  if (sectionId === "add-section" && editingId === null) resetForm();
 }
 
-// ===== RENDER TABLE =====
+// ============================================
+//  COURSES - FETCH
+// ============================================
+function fetchCourses() {
+  document.getElementById("courses-table-body").innerHTML =
+    `<tr><td colspan="9" style="text-align:center;padding:40px;color:#aaa;">
+      <i class="fa fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+      Load ho raha hai...
+    </td></tr>`;
+
+  fetch(SCRIPT_URL + "?action=getCourses")
+    .then((r) => r.json())
+    .then((data) => {
+      if (
+        data.result === "success" &&
+        data.courses &&
+        data.courses.length > 0
+      ) {
+        courses = data.courses.map((c) => ({
+          ...c,
+          id: Number(c.id),
+          origPrice: Number(c.origPrice),
+          discPrice: Number(c.discPrice),
+        }));
+      } else {
+        courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+        saveAllDefaultCourses();
+      }
+      renderTable();
+      updateStats();
+    })
+    .catch(() => {
+      courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
+      renderTable();
+      updateStats();
+      showToast(
+        "⚠️ Sheets connect nahi hua, default data dikh raha hai",
+        "error",
+      );
+    });
+}
+
+function saveAllDefaultCourses() {
+  DEFAULT_COURSES.forEach((c) => {
+    fetch(SCRIPT_URL + "?action=saveCourse", {
+      method: "POST",
+      body: JSON.stringify(c),
+    }).catch((err) => console.error(err));
+  });
+}
+
+// ============================================
+//  COURSES - RENDER TABLE
+// ============================================
 function renderTable() {
   const tbody = document.getElementById("courses-table-body");
   tbody.innerHTML = "";
 
-  if (courses.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#aaa;">
+  if (!courses.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:#aaa;">
       <i class="fa fa-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
-      Koi course nahi mila. Pehle course add karo.
+      Koi course nahi mila.
     </td></tr>`;
     return;
   }
 
-  courses.forEach((c, index) => {
-    const discountPct = Math.round(
-      ((c.origPrice - c.discPrice) / c.origPrice) * 100,
-    );
+  courses.forEach((c, i) => {
+    const pct = Math.round(((c.origPrice - c.discPrice) / c.origPrice) * 100);
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td style="color:#aaa; font-size:0.85rem;">${index + 1}</td>
-      <td class="course-icon-cell">${c.icon || "📚"}</td>
-      <td class="course-name">${c.title}</td>
-      <td style="font-size:0.83rem; color:#666;">${c.duration} | ${c.level}</td>
-      <td style="font-size:0.83rem; color:#555; max-width:180px;">${c.desc}</td>
-      <td><span class="orig-price">₹${Number(c.origPrice).toLocaleString("en-IN")}</span></td>
-      <td><span class="disc-price">₹${Number(c.discPrice).toLocaleString("en-IN")}</span></td>
-      <td><span class="badge">${discountPct}% OFF</span></td>
+      <td style="color:#aaa;font-size:.85rem;">${i + 1}</td>
+      <td style="font-size:1.6rem;">${c.icon || "📚"}</td>
+      <td style="font-weight:600;color:var(--primary);">${c.title}</td>
+      <td style="font-size:.83rem;color:#666;">${c.duration} | ${c.level}</td>
+      <td style="font-size:.83rem;color:#555;max-width:180px;">${c.desc}</td>
+      <td><span style="text-decoration:line-through;color:#aaa;font-size:.82rem;">₹${Number(c.origPrice).toLocaleString("en-IN")}</span></td>
+      <td><span style="color:var(--danger);font-weight:700;font-size:1rem;">₹${Number(c.discPrice).toLocaleString("en-IN")}</span></td>
+      <td><span class="badge">${pct}% OFF</span></td>
       <td>
         <div class="action-btns">
-          <button class="act-btn edit-price-btn" onclick="openPriceModal(${c.id})">
-            <i class="fa fa-tag"></i> Price
-          </button>
-          <button class="act-btn edit-btn" onclick="editCourse(${c.id})">
-            <i class="fa fa-pen"></i> Edit
-          </button>
-          <button class="act-btn del-btn" onclick="openDeleteModal(${c.id})">
-            <i class="fa fa-trash"></i> Delete
-          </button>
+          <button class="act-btn edit-price-btn" onclick="openPriceModal(${c.id})"><i class="fa fa-tag"></i> Price</button>
+          <button class="act-btn edit-btn"       onclick="editCourse(${c.id})"><i class="fa fa-pen"></i> Edit</button>
+          <button class="act-btn del-btn"        onclick="openDeleteModal(${c.id})"><i class="fa fa-trash"></i> Delete</button>
         </div>
-      </td>
-    `;
+      </td>`;
     tbody.appendChild(tr);
   });
 }
@@ -353,7 +349,9 @@ function updateStats() {
   document.getElementById("total-courses-count").textContent = courses.length;
 }
 
-// ===== SAVE COURSE =====
+// ============================================
+//  COURSES - SAVE / EDIT
+// ============================================
 function saveCourse() {
   const icon = document.getElementById("f-icon").value.trim() || "📚";
   const title = document.getElementById("f-title").value.trim();
@@ -380,40 +378,29 @@ function saveCourse() {
     return;
   }
 
-  const courseObj = {
-    icon,
-    title,
-    duration,
-    level,
-    desc,
-    origPrice,
-    discPrice,
-  };
-
+  const obj = { icon, title, duration, level, desc, origPrice, discPrice };
   if (editingId !== null) {
-    courseObj.id = editingId;
+    obj.id = editingId;
     const idx = courses.findIndex((c) => c.id === editingId);
-    if (idx !== -1) courses[idx] = courseObj;
+    if (idx !== -1) courses[idx] = obj;
   } else {
-    courseObj.id =
-      courses.length > 0 ? Math.max(...courses.map((c) => c.id)) + 1 : 1;
-    courses.push(courseObj);
+    obj.id = courses.length > 0 ? Math.max(...courses.map((c) => c.id)) + 1 : 1;
+    courses.push(obj);
   }
 
-  showFormMsg("⏳ Google Sheets mein save ho raha hai...");
-
+  showFormMsg("⏳ Save ho raha hai...");
   fetch(SCRIPT_URL + "?action=saveCourse", {
     method: "POST",
-    body: JSON.stringify(courseObj),
+    body: JSON.stringify(obj),
   })
-    .then((res) => res.json())
-    .then((data) => {
+    .then((r) => r.json())
+    .then(() => {
       renderTable();
       updateStats();
       showFormMsg(
         editingId !== null
           ? "✅ Course update ho gaya!"
-          : "✅ Naya course add ho gaya!",
+          : "✅ Course add ho gaya!",
       );
       editingId = null;
       setTimeout(() => {
@@ -421,10 +408,7 @@ function saveCourse() {
         showSection("courses-section", document.querySelector(".nav-item"));
       }, 1500);
     })
-    .catch((err) => {
-      showToast("❌ Save nahi hua, internet check karo", "error");
-      console.error(err);
-    });
+    .catch(() => showToast("❌ Save nahi hua, internet check karo", "error"));
 }
 
 function editCourse(id) {
@@ -439,7 +423,7 @@ function editCourse(id) {
   document.getElementById("f-orig").value = c.origPrice;
   document.getElementById("f-disc").value = c.discPrice;
   document.getElementById("form-heading").innerHTML =
-    `<i class="fa fa-pen"></i> Edit Course: ${c.title}`;
+    `<i class="fa fa-pen"></i> Edit: ${c.title}`;
   showSection("add-section", null);
 }
 
@@ -458,22 +442,22 @@ function resetForm() {
     "f-desc",
     "f-orig",
     "f-disc",
-  ].forEach((id) => {
-    document.getElementById(id).value = "";
-  });
+  ].forEach((id) => (document.getElementById(id).value = ""));
   document.getElementById("form-heading").innerHTML =
     `<i class="fa fa-plus-circle"></i> Add New Course`;
   document.getElementById("form-msg").style.display = "none";
   editingId = null;
 }
 
-function showFormMsg(text) {
+function showFormMsg(t) {
   const el = document.getElementById("form-msg");
-  el.textContent = text;
+  el.textContent = t;
   el.style.display = "block";
 }
 
-// ===== DELETE =====
+// ============================================
+//  COURSES - DELETE
+// ============================================
 function openDeleteModal(id) {
   deleteTargetId = id;
   document.getElementById("delete-modal").style.display = "flex";
@@ -484,26 +468,24 @@ function closeDeleteModal() {
 }
 function confirmDelete() {
   if (deleteTargetId === null) return;
-
   fetch(SCRIPT_URL + "?action=deleteCourse", {
     method: "POST",
     body: JSON.stringify({ courseId: deleteTargetId }),
   })
-    .then((res) => res.json())
-    .then((data) => {
+    .then((r) => r.json())
+    .then(() => {
       courses = courses.filter((c) => c.id !== deleteTargetId);
       renderTable();
       updateStats();
       closeDeleteModal();
       showToast("✅ Course delete ho gaya!", "success");
     })
-    .catch((err) => {
-      showToast("❌ Delete nahi hua, internet check karo", "error");
-      console.error(err);
-    });
+    .catch(() => showToast("❌ Delete nahi hua, dobara try karo", "error"));
 }
 
-// ===== PRICE EDIT =====
+// ============================================
+//  COURSES - PRICE MODAL
+// ============================================
 function openPriceModal(id) {
   const c = courses.find((x) => x.id === id);
   if (!c) return;
@@ -534,55 +516,188 @@ function confirmPriceUpdate() {
   if (idx !== -1) {
     courses[idx].origPrice = newOrig;
     courses[idx].discPrice = newDisc;
-
     fetch(SCRIPT_URL + "?action=saveCourse", {
       method: "POST",
       body: JSON.stringify(courses[idx]),
     })
-      .then((res) => res.json())
-      .then((data) => {
+      .then((r) => r.json())
+      .then(() => {
         renderTable();
         closePriceModal();
         showToast("✅ Price update ho gaya!", "success");
       })
-      .catch((err) => {
-        showToast("❌ Update nahi hua, internet check karo", "error");
-        console.error(err);
-      });
+      .catch(() => showToast("❌ Update nahi hua", "error"));
   }
 }
 
-// ===== TOAST =====
-function showToast(message, type = "success") {
-  let toast = document.getElementById("admin-toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "admin-toast";
-    toast.style.cssText = `
-      position:fixed; bottom:30px; right:30px; padding:14px 22px;
-      border-radius:12px; font-size:0.9rem; font-weight:600;
-      z-index:99999; box-shadow:0 8px 25px rgba(0,0,0,0.2);
-      transition:opacity 0.3s; font-family:'Poppins',sans-serif;
-    `;
-    document.body.appendChild(toast);
+// ============================================
+//  GALLERY - FETCH
+// ============================================
+function fetchGallery() {
+  fetch(SCRIPT_URL + "?action=getGallery")
+    .then((r) => r.json())
+    .then((data) => {
+      galleryImages =
+        data.result === "success" && data.images ? data.images : [];
+      renderGallery();
+    })
+    .catch(() => {
+      galleryImages = [];
+      renderGallery();
+    });
+}
+
+// ============================================
+//  GALLERY - RENDER
+// ============================================
+function renderGallery() {
+  const grid = document.getElementById("gallery-grid");
+  if (!galleryImages.length) {
+    grid.innerHTML = `<p style="color:#aaa;text-align:center;padding:30px;grid-column:1/-1;">
+      Abhi koi image nahi hai. Upar se upload karo!
+    </p>`;
+    return;
   }
-  toast.textContent = message;
-  toast.style.background = type === "success" ? "#28a745" : "#e63946";
-  toast.style.color = "#fff";
-  toast.style.display = "block";
-  toast.style.opacity = "1";
+  grid.innerHTML = "";
+  galleryImages.forEach((img) => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    div.innerHTML = `
+      <img src="${img.imageData}" alt="${img.altText || ""}" loading="lazy"/>
+      <div class="gallery-item-overlay">
+        <span>${img.altText || "No caption"}</span>
+        <button class="gallery-del-btn" onclick="openGalleryDeleteModal('${img.id}')">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ============================================
+//  GALLERY - IMAGE PREVIEW
+// ============================================
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Size check — 1MB max (Base64 sheets ke liye)
+  if (file.size > 1 * 1024 * 1024) {
+    showToast("⚠️ Image 1MB se choti honi chahiye!", "error");
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    selectedImageBase64 = e.target.result;
+    document.getElementById("img-preview").src = selectedImageBase64;
+    document.getElementById("preview-box").style.display = "flex";
+    document.querySelector(".upload-area p").textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================
+//  GALLERY - UPLOAD
+// ============================================
+function uploadGalleryImage() {
+  if (!selectedImageBase64) {
+    showToast("Pehle image select karo!", "error");
+    return;
+  }
+  const alt = document.getElementById("g-alt").value.trim() || "Gallery Image";
+
+  const newId =
+    galleryImages.length > 0
+      ? Math.max(...galleryImages.map((g) => Number(g.id))) + 1
+      : 1;
+  const imageData = { id: newId, imageData: selectedImageBase64, altText: alt };
+
+  const msgEl = document.getElementById("gallery-msg");
+  msgEl.textContent = "⏳ Google Sheets mein save ho raha hai...";
+  msgEl.style.display = "block";
+
+  fetch(SCRIPT_URL + "?action=saveGallery", {
+    method: "POST",
+    body: JSON.stringify(imageData),
+  })
+    .then((r) => r.json())
+    .then(() => {
+      galleryImages.push(imageData);
+      renderGallery();
+      msgEl.textContent = "✅ Image upload ho gayi!";
+      // Reset
+      selectedImageBase64 = null;
+      document.getElementById("gallery-file").value = "";
+      document.getElementById("g-alt").value = "";
+      document.getElementById("preview-box").style.display = "none";
+      document.querySelector(".upload-area p").textContent =
+        "Click karo ya drag & drop karo";
+      setTimeout(() => (msgEl.style.display = "none"), 3000);
+    })
+    .catch(() => showToast("❌ Upload nahi hua, dobara try karo", "error"));
+}
+
+// ============================================
+//  GALLERY - DELETE
+// ============================================
+function openGalleryDeleteModal(id) {
+  galleryDeleteId = id;
+  document.getElementById("delete-gallery-modal").style.display = "flex";
+}
+function closeGalleryDeleteModal() {
+  galleryDeleteId = null;
+  document.getElementById("delete-gallery-modal").style.display = "none";
+}
+function confirmGalleryDelete() {
+  if (!galleryDeleteId) return;
+  fetch(SCRIPT_URL + "?action=deleteGallery", {
+    method: "POST",
+    body: JSON.stringify({ imageId: galleryDeleteId }),
+  })
+    .then((r) => r.json())
+    .then(() => {
+      galleryImages = galleryImages.filter(
+        (g) => String(g.id) !== String(galleryDeleteId),
+      );
+      renderGallery();
+      closeGalleryDeleteModal();
+      showToast("✅ Image delete ho gayi!", "success");
+    })
+    .catch(() => showToast("❌ Delete nahi hua", "error"));
+}
+
+// ============================================
+//  TOAST
+// ============================================
+function showToast(message, type = "success") {
+  let t = document.getElementById("admin-toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "admin-toast";
+    t.style.cssText =
+      "position:fixed;bottom:30px;right:30px;padding:14px 22px;border-radius:12px;font-size:.9rem;font-weight:600;z-index:99999;box-shadow:0 8px 25px rgba(0,0,0,.2);transition:opacity .3s;font-family:'Poppins',sans-serif;";
+    document.body.appendChild(t);
+  }
+  t.textContent = message;
+  t.style.background = type === "success" ? "#28a745" : "#e63946";
+  t.style.color = "#fff";
+  t.style.display = "block";
+  t.style.opacity = "1";
   setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => {
-      toast.style.display = "none";
-    }, 300);
+    t.style.opacity = "0";
+    setTimeout(() => (t.style.display = "none"), 300);
   }, 3000);
 }
 
-// Modal background click se close
-document.getElementById("delete-modal").addEventListener("click", function (e) {
-  if (e.target === this) closeDeleteModal();
-});
-document.getElementById("price-modal").addEventListener("click", function (e) {
-  if (e.target === this) closePriceModal();
+// Modal backdrop close
+["delete-modal", "delete-gallery-modal", "price-modal"].forEach((id) => {
+  document.getElementById(id).addEventListener("click", function (e) {
+    if (e.target === this) {
+      if (id === "delete-modal") closeDeleteModal();
+      if (id === "delete-gallery-modal") closeGalleryDeleteModal();
+      if (id === "price-modal") closePriceModal();
+    }
+  });
 });

@@ -1,7 +1,6 @@
 /* ===========================
    RICS ADMIN PANEL - admin.css
    =========================== */
-
 :root {
   --primary: #0a1f44;
   --primary-light: #0d2960;
@@ -19,7 +18,6 @@
   --shadow: 0 4px 20px rgba(10, 31, 68, 0.08);
   --radius: 14px;
 }
-
 * {
   margin: 0;
   padding: 0;
@@ -34,7 +32,7 @@ body {
   color: var(--text);
 }
 
-/* ===== LOGIN SCREEN ===== */
+/* ===== LOGIN ===== */
 #login-screen {
   min-height: 100vh;
   display: flex;
@@ -162,13 +160,11 @@ body {
   min-height: 20px;
 }
 
-/* ===== DASHBOARD LAYOUT ===== */
+/* ===== DASHBOARD ===== */
 #dashboard {
   display: flex;
   min-height: 100vh;
 }
-
-/* SIDEBAR */
 .sidebar {
   width: var(--sidebar-w);
   background: linear-gradient(180deg, var(--primary) 0%, #0d2960 100%);
@@ -178,7 +174,6 @@ body {
   left: 0;
   display: flex;
   flex-direction: column;
-  padding: 0;
   z-index: 100;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }
@@ -237,7 +232,6 @@ body {
   color: var(--accent);
 }
 .nav-item.logout {
-  margin-top: auto;
   color: rgba(230, 57, 70, 0.7);
 }
 .nav-item.logout:hover {
@@ -266,8 +260,6 @@ body {
   font-size: 0.78rem;
   margin-top: 4px;
 }
-
-/* MAIN CONTENT */
 .main-content {
   margin-left: var(--sidebar-w);
   flex: 1;
@@ -312,8 +304,6 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(255, 180, 0, 0.35);
 }
-
-/* PANEL SECTIONS */
 .panel-section {
   animation: fadeIn 0.3s ease;
 }
@@ -438,7 +428,7 @@ body {
   color: #fff;
 }
 
-/* ADD/EDIT FORM */
+/* FORM */
 .form-card {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -464,7 +454,7 @@ body {
   gap: 7px;
 }
 .form-group.full-width {
-  grid-column: 1 / -1;
+  grid-column: 1/-1;
 }
 .form-group label {
   font-size: 0.83rem;
@@ -532,6 +522,89 @@ body {
   font-size: 0.88rem;
   font-weight: 600;
   margin-top: 15px;
+}
+
+/* GALLERY UPLOAD */
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #fafbff;
+}
+.upload-area:hover {
+  border-color: var(--accent);
+  background: rgba(255, 180, 0, 0.04);
+}
+.upload-area i {
+  font-size: 2.5rem;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 12px;
+}
+.upload-area p {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.upload-area span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+.admin-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: #f0f0f0;
+}
+.gallery-item img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+.gallery-item-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gallery-item-overlay span {
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gallery-del-btn {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.gallery-del-btn:hover {
+  background: #c0392b;
 }
 
 /* MODALS */
@@ -623,14 +696,15 @@ body {
     margin-left: 220px;
     padding: 20px 15px;
   }
-  .form-actions {
-    flex-direction: column;
-  }
+  .form-actions,
   .modal-btns {
     flex-direction: column;
   }
   .price-modal-fields {
     grid-template-columns: 1fr;
+  }
+  .admin-gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
 @media (max-width: 560px) {
