@@ -2,7 +2,7 @@
 //  RICS Technologies - script.js (Final Version)
 //  - Form Validation (Admission + Contact)
 //  - Dynamic Courses from Google Sheets
-//  - Dynamic Gallery from Google Sheets
+//  - Dynamic Gallery from Google Sheets (Cloudinary URLs)
 // ============================================================
 
 const scriptURL =
@@ -70,7 +70,6 @@ function validateMessage(message) {
 //  1. ADMISSION FORM
 // ============================================================
 if (admissionForm) {
-  // Real-time validation
   const nameInput = admissionForm.querySelector('input[name="Name"]');
   const mobileInput = admissionForm.querySelector('input[name="Mobile"]');
   const courseSelect = admissionForm.querySelector('select[name="Course"]');
@@ -90,21 +89,18 @@ if (admissionForm) {
     e.preventDefault();
     let valid = true;
 
-    // Name
     const nameErr = validateName(nameInput ? nameInput.value : "");
     if (nameErr) {
       showFieldError(nameInput, nameErr);
       valid = false;
     } else if (nameInput) clearFieldError(nameInput);
 
-    // Mobile
     const mobErr = validateMobile(mobileInput ? mobileInput.value : "");
     if (mobErr) {
       showFieldError(mobileInput, mobErr);
       valid = false;
     } else if (mobileInput) clearFieldError(mobileInput);
 
-    // Course
     if (courseSelect && !courseSelect.value) {
       showFieldError(courseSelect, "Course select karna zaroori hai!");
       valid = false;
@@ -130,7 +126,6 @@ if (admissionForm) {
         console.error("Error!", error.message);
         admissionBtn.innerHTML = "Submit Inquiry";
         admissionBtn.disabled = false;
-        alert("Kuch error hua! Dobara try karein.");
       });
   });
 }
@@ -197,7 +192,6 @@ if (contactForm) {
         console.error("Error!", error.message);
         contactBtn.innerHTML = "Send Message";
         contactBtn.disabled = false;
-        alert("Kuch error hua! Dobara try karein.");
       });
   });
 }
@@ -429,18 +423,16 @@ function updateDropdown(courses) {
 }
 
 // ============================================================
-//  6. DYNAMIC GALLERY (Google Sheets)
+//  6. DYNAMIC GALLERY (Cloudinary URLs from Google Sheets)
 // ============================================================
 function renderGallery(images) {
   const galleryEl = document.querySelector(".gallery");
-  if (!galleryEl) return;
-
-  if (!images || !images.length) return; // purani static images rehne do
+  if (!galleryEl || !images || !images.length) return;
 
   galleryEl.innerHTML = "";
   images.forEach((img) => {
     const el = document.createElement("img");
-    el.src = img.imageData;
+    el.src = img.imageUrl;
     el.alt = img.altText || "Gallery";
     el.loading = "lazy";
     galleryEl.appendChild(el);
@@ -448,10 +440,10 @@ function renderGallery(images) {
 }
 
 // ============================================================
-//  PAGE LOAD - Fetch Everything
+//  PAGE LOAD
 // ============================================================
 document.addEventListener("DOMContentLoaded", () => {
-  // Courses
+  // Courses load karo
   fetch(scriptURL + "?action=getCourses")
     .then((r) => r.json())
     .then((data) => {
@@ -473,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(() => renderCourses(DEFAULT_COURSES));
 
-  // Gallery
+  // Gallery load karo
   fetch(scriptURL + "?action=getGallery")
     .then((r) => r.json())
     .then((data) => {
@@ -481,5 +473,5 @@ document.addEventListener("DOMContentLoaded", () => {
         renderGallery(data.images);
       }
     })
-    .catch(() => {}); // error par purani static gallery rehne do
+    .catch(() => {});
 });

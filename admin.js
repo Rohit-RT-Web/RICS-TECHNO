@@ -1,10 +1,13 @@
 // ============================================
 //  RICS ADMIN PANEL - admin.js
-//  Netlify Identity se Secure Login
+//  Cloudinary Image Upload + Google Sheets
 // ============================================
 
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbzIvA-rLO0vjL218yUF9HqANzf7TpTzeXroybKCZ3y0735Z6vHudfCEitULpeofTI9P/exec";
+const CLOUD_NAME = "dlibp1sfl";
+const UPLOAD_PRESET = "el9fxzux";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
 // ===== STATE =====
 let courses = [];
@@ -13,7 +16,7 @@ let deleteTargetId = null;
 let priceTargetId = null;
 let galleryImages = [];
 let galleryDeleteId = null;
-let selectedImageBase64 = null;
+let selectedFile = null;
 
 // ===== DEFAULT COURSES =====
 const DEFAULT_COURSES = [
@@ -180,25 +183,19 @@ window.addEventListener("load", () => {
     return;
   }
 
-  // Pehle se logged in hai?
   const user = netlifyIdentity.currentUser();
-  if (user) {
-    showDashboard(user);
-  }
+  if (user) showDashboard(user);
 
-  // Login hone par
   netlifyIdentity.on("login", (user) => {
     netlifyIdentity.close();
     showDashboard(user);
   });
 
-  // Logout hone par
   netlifyIdentity.on("logout", () => {
     document.getElementById("dashboard").style.display = "none";
     document.getElementById("login-screen").style.display = "flex";
   });
 
-  // Invite link se password set hone par
   netlifyIdentity.on("init", (user) => {
     if (user) showDashboard(user);
   });
@@ -216,16 +213,13 @@ function netlifyLogin() {
 function showDashboard(user) {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("dashboard").style.display = "flex";
-  // Sidebar mein email dikhao
   const emailEl = document.getElementById("admin-email-display");
   if (emailEl && user.email) emailEl.textContent = user.email;
   init();
 }
 
 function adminLogout() {
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.logout();
-  }
+  if (window.netlifyIdentity) window.netlifyIdentity.logout();
 }
 
 // ============================================
@@ -264,7 +258,6 @@ function showSection(sectionId, clickedLink) {
     document.getElementById("page-title").textContent = titles[sectionId][0];
     document.getElementById("page-subtitle").textContent = titles[sectionId][1];
   }
-
   if (sectionId === "add-section" && editingId === null) resetForm();
 }
 
@@ -303,10 +296,7 @@ function fetchCourses() {
       courses = JSON.parse(JSON.stringify(DEFAULT_COURSES));
       renderTable();
       updateStats();
-      showToast(
-        "⚠️ Sheets connect nahi hua, default data dikh raha hai",
-        "error",
-      );
+      showToast("⚠️ Sheets connect nahi hua", "error");
     });
 }
 
@@ -328,7 +318,6 @@ function renderTable() {
 
   if (!courses.length) {
     tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:#aaa;">
-      <i class="fa fa-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
       Koi course nahi mila.
     </td></tr>`;
     return;
@@ -420,7 +409,7 @@ function saveCourse() {
         showSection("courses-section", document.querySelector(".nav-item"));
       }, 1500);
     })
-    .catch(() => showToast("❌ Save nahi hua, internet check karo", "error"));
+    .catch(() => showToast("❌ Save nahi hua", "error"));
 }
 
 function editCourse(id) {
@@ -492,7 +481,7 @@ function confirmDelete() {
       closeDeleteModal();
       showToast("✅ Course delete ho gaya!", "success");
     })
-    .catch(() => showToast("❌ Delete nahi hua, dobara try karo", "error"));
+    .catch(() => showToast("❌ Delete nahi hua", "error"));
 }
 
 // ============================================
@@ -551,18 +540,18 @@ function fetchGallery() {
     .then((data) => {
       galleryImages =
         data.result === "success" && data.images ? data.images : [];
-      renderGallery();
+      renderGalleryAdmin();
     })
     .catch(() => {
       galleryImages = [];
-      renderGallery();
+      renderGalleryAdmin();
     });
 }
 
 // ============================================
-//  GALLERY - RENDER
+//  GALLERY - RENDER (Admin)
 // ============================================
-function renderGallery() {
+function renderGalleryAdmin() {
   const grid = document.getElementById("gallery-grid");
   if (!galleryImages.length) {
     grid.innerHTML = `<p style="color:#aaa;text-align:center;padding:30px;grid-column:1/-1;">
@@ -575,7 +564,8 @@ function renderGallery() {
     const div = document.createElement("div");
     div.className = "gallery-item";
     div.innerHTML = `
-      <img src="${img.imageData}" alt="${img.altText || ""}" loading="lazy" style="width:100%;height:160px;object-fit:contain;background:#f8f8f8;"/>
+      <img src="${img.imageUrl}" alt="${img.altText || ""}" loading="lazy"
+        style="width:100%;height:160px;object-fit:cover;display:block;"/>
       <div class="gallery-item-overlay">
         <span>${img.altText || "No caption"}</span>
         <button class="gallery-del-btn" onclick="openGalleryDeleteModal('${img.id}')">
@@ -587,20 +577,23 @@ function renderGallery() {
 }
 
 // ============================================
-//  GALLERY - PREVIEW
+//  GALLERY - IMAGE PREVIEW
 // ============================================
 function previewImage(event) {
   const file = event.target.files[0];
   if (!file) return;
-  if (file.size > 1 * 1024 * 1024) {
-    showToast("⚠️ Image 1MB se choti honi chahiye!", "error");
+
+  // 5MB max (Cloudinary handle karega compression)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("⚠️ Image 5MB se choti honi chahiye!", "error");
     event.target.value = "";
     return;
   }
+
+  selectedFile = file;
   const reader = new FileReader();
   reader.onload = function (e) {
-    selectedImageBase64 = e.target.result;
-    document.getElementById("img-preview").src = selectedImageBase64;
+    document.getElementById("img-preview").src = e.target.result;
     document.getElementById("preview-box").style.display = "flex";
     document.querySelector(".upload-area p").textContent = file.name;
   };
@@ -608,42 +601,72 @@ function previewImage(event) {
 }
 
 // ============================================
-//  GALLERY - UPLOAD
+//  GALLERY - UPLOAD TO CLOUDINARY → SAVE URL TO SHEETS
 // ============================================
 function uploadGalleryImage() {
-  if (!selectedImageBase64) {
+  if (!selectedFile) {
     showToast("Pehle image select karo!", "error");
     return;
   }
-  const alt = document.getElementById("g-alt").value.trim() || "Gallery Image";
-  const newId =
-    galleryImages.length > 0
-      ? Math.max(...galleryImages.map((g) => Number(g.id))) + 1
-      : 1;
-  const imageData = { id: newId, imageData: selectedImageBase64, altText: alt };
 
+  const alt = document.getElementById("g-alt").value.trim() || "Gallery Image";
   const msgEl = document.getElementById("gallery-msg");
-  msgEl.textContent = "⏳ Google Sheets mein save ho raha hai...";
+
+  msgEl.textContent = "⏳ Step 1/2: Cloudinary par upload ho raha hai...";
   msgEl.style.display = "block";
 
-  fetch(SCRIPT_URL + "?action=saveGallery", {
-    method: "POST",
-    body: JSON.stringify(imageData),
-  })
+  // Step 1 — Cloudinary par upload karo
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+  formData.append("upload_preset", UPLOAD_PRESET);
+  formData.append("folder", "rics_gallery");
+
+  fetch(CLOUDINARY_URL, { method: "POST", body: formData })
     .then((r) => r.json())
-    .then(() => {
-      galleryImages.push(imageData);
-      renderGallery();
-      msgEl.textContent = "✅ Image upload ho gayi!";
-      selectedImageBase64 = null;
-      document.getElementById("gallery-file").value = "";
-      document.getElementById("g-alt").value = "";
-      document.getElementById("preview-box").style.display = "none";
-      document.querySelector(".upload-area p").textContent =
-        "Click karo ya drag & drop karo";
-      setTimeout(() => (msgEl.style.display = "none"), 3000);
+    .then((cloudData) => {
+      if (!cloudData.secure_url) {
+        showToast("❌ Cloudinary upload fail hua!", "error");
+        msgEl.style.display = "none";
+        return;
+      }
+
+      const imageUrl = cloudData.secure_url;
+      msgEl.textContent = "⏳ Step 2/2: Google Sheets mein save ho raha hai...";
+
+      // Step 2 — Sirf URL Google Sheets mein save karo
+      const newId =
+        galleryImages.length > 0
+          ? Math.max(...galleryImages.map((g) => Number(g.id))) + 1
+          : 1;
+
+      const imageData = { id: newId, imageUrl: imageUrl, altText: alt };
+
+      fetch(SCRIPT_URL + "?action=saveGallery", {
+        method: "POST",
+        body: JSON.stringify(imageData),
+      })
+        .then((r) => r.json())
+        .then(() => {
+          galleryImages.push(imageData);
+          renderGalleryAdmin();
+          msgEl.textContent =
+            "✅ Image upload ho gayi aur website par dikh rahi hai!";
+
+          // Reset
+          selectedFile = null;
+          document.getElementById("gallery-file").value = "";
+          document.getElementById("g-alt").value = "";
+          document.getElementById("preview-box").style.display = "none";
+          document.querySelector(".upload-area p").textContent =
+            "Click karo ya drag & drop karo";
+          setTimeout(() => (msgEl.style.display = "none"), 4000);
+        })
+        .catch(() => showToast("❌ Sheets mein save nahi hua", "error"));
     })
-    .catch(() => showToast("❌ Upload nahi hua, dobara try karo", "error"));
+    .catch(() => {
+      showToast("❌ Upload fail hua, internet check karo", "error");
+      msgEl.style.display = "none";
+    });
 }
 
 // ============================================
@@ -668,7 +691,7 @@ function confirmGalleryDelete() {
       galleryImages = galleryImages.filter(
         (g) => String(g.id) !== String(galleryDeleteId),
       );
-      renderGallery();
+      renderGalleryAdmin();
       closeGalleryDeleteModal();
       showToast("✅ Image delete ho gayi!", "success");
     })
