@@ -1,20 +1,10 @@
 // ============================================
 //  RICS ADMIN PANEL - admin.js
-//  - Secure Login (credentials backend se)
-//  - Course Management
-//  - Gallery Management (Google Sheets)
+//  Netlify Identity se Secure Login
 // ============================================
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzIvA-rLO0vjL218yUF9HqANzf7TpTzeXroybKCZ3y0735Z6vHudfCEitULpeofTI9P/exec";
-
-// ===== CREDENTIALS (yahan change karo) =====
-// NOTE: Ye client-side mein hain, isliye hum extra
-// obfuscation use kar rahe hain — environment variables
-// sirf Node.js/server par kaam karti hain.
-// Best practice: ye values change kar lo aur file private rakho.
-const _a = atob("Um9oaXRzYWluaUA2Mzk2"); // "Rohitsaini@6396"
-const _b = atob("Uk9ISVRTQUlOSTQ0"); // "ROHITSAINI44"
+  "https://script.google.com/macros/s/AKfycbwpT9ooXSAKW7-XEmSdJAzq24-3GWlyLCWcxou3Mgiy6Qp6lSabo34ODRSDM7g7uLzQ/exec";
 
 // ===== STATE =====
 let courses = [];
@@ -180,40 +170,62 @@ const DEFAULT_COURSES = [
 ];
 
 // ============================================
-//  LOGIN
+//  NETLIFY IDENTITY - SECURE LOGIN
 // ============================================
-function adminLogin() {
-  const user = document.getElementById("admin-user").value.trim();
-  const pass = document.getElementById("admin-pass").value.trim();
-  const errEl = document.getElementById("login-error");
-
-  if (!user || !pass) {
-    errEl.textContent = "⚠️ Username aur password dono zaroori hain!";
-    setTimeout(() => (errEl.textContent = ""), 3000);
+window.addEventListener("load", () => {
+  const netlifyIdentity = window.netlifyIdentity;
+  if (!netlifyIdentity) {
+    document.getElementById("login-error").textContent =
+      "⚠️ Identity load nahi hua, page refresh karo.";
     return;
   }
 
-  if (user === _a && pass === _b) {
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("dashboard").style.display = "flex";
-    init();
+  // Pehle se logged in hai?
+  const user = netlifyIdentity.currentUser();
+  if (user) {
+    showDashboard(user);
+  }
+
+  // Login hone par
+  netlifyIdentity.on("login", (user) => {
+    netlifyIdentity.close();
+    showDashboard(user);
+  });
+
+  // Logout hone par
+  netlifyIdentity.on("logout", () => {
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("login-screen").style.display = "flex";
+  });
+
+  // Invite link se password set hone par
+  netlifyIdentity.on("init", (user) => {
+    if (user) showDashboard(user);
+  });
+});
+
+function netlifyLogin() {
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.open("login");
   } else {
-    errEl.textContent = "❌ Galat username ya password!";
-    document.getElementById("admin-pass").value = "";
-    setTimeout(() => (errEl.textContent = ""), 3000);
+    document.getElementById("login-error").textContent =
+      "⚠️ Page refresh karo aur dobara try karo.";
   }
 }
 
-document.addEventListener("keydown", (e) => {
-  const ls = document.getElementById("login-screen");
-  if (e.key === "Enter" && ls && ls.style.display !== "none") adminLogin();
-});
+function showDashboard(user) {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("dashboard").style.display = "flex";
+  // Sidebar mein email dikhao
+  const emailEl = document.getElementById("admin-email-display");
+  if (emailEl && user.email) emailEl.textContent = user.email;
+  init();
+}
 
 function adminLogout() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
-  document.getElementById("admin-user").value = "";
-  document.getElementById("admin-pass").value = "";
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.logout();
+  }
 }
 
 // ============================================
@@ -563,7 +575,7 @@ function renderGallery() {
     const div = document.createElement("div");
     div.className = "gallery-item";
     div.innerHTML = `
-      <img src="${img.imageData}" alt="${img.altText || ""}" loading="lazy"/>
+      <img src="${img.imageData}" alt="${img.altText || ""}" loading="lazy" style="width:100%;height:160px;object-fit:contain;background:#f8f8f8;"/>
       <div class="gallery-item-overlay">
         <span>${img.altText || "No caption"}</span>
         <button class="gallery-del-btn" onclick="openGalleryDeleteModal('${img.id}')">
@@ -575,19 +587,16 @@ function renderGallery() {
 }
 
 // ============================================
-//  GALLERY - IMAGE PREVIEW
+//  GALLERY - PREVIEW
 // ============================================
 function previewImage(event) {
   const file = event.target.files[0];
   if (!file) return;
-
-  // Size check — 1MB max (Base64 sheets ke liye)
   if (file.size > 1 * 1024 * 1024) {
     showToast("⚠️ Image 1MB se choti honi chahiye!", "error");
     event.target.value = "";
     return;
   }
-
   const reader = new FileReader();
   reader.onload = function (e) {
     selectedImageBase64 = e.target.result;
@@ -607,7 +616,6 @@ function uploadGalleryImage() {
     return;
   }
   const alt = document.getElementById("g-alt").value.trim() || "Gallery Image";
-
   const newId =
     galleryImages.length > 0
       ? Math.max(...galleryImages.map((g) => Number(g.id))) + 1
@@ -627,7 +635,6 @@ function uploadGalleryImage() {
       galleryImages.push(imageData);
       renderGallery();
       msgEl.textContent = "✅ Image upload ho gayi!";
-      // Reset
       selectedImageBase64 = null;
       document.getElementById("gallery-file").value = "";
       document.getElementById("g-alt").value = "";
@@ -693,11 +700,13 @@ function showToast(message, type = "success") {
 
 // Modal backdrop close
 ["delete-modal", "delete-gallery-modal", "price-modal"].forEach((id) => {
-  document.getElementById(id).addEventListener("click", function (e) {
-    if (e.target === this) {
-      if (id === "delete-modal") closeDeleteModal();
-      if (id === "delete-gallery-modal") closeGalleryDeleteModal();
-      if (id === "price-modal") closePriceModal();
-    }
-  });
+  const el = document.getElementById(id);
+  if (el)
+    el.addEventListener("click", function (e) {
+      if (e.target === this) {
+        if (id === "delete-modal") closeDeleteModal();
+        if (id === "delete-gallery-modal") closeGalleryDeleteModal();
+        if (id === "price-modal") closePriceModal();
+      }
+    });
 });
