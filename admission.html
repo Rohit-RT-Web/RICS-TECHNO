@@ -926,6 +926,63 @@
           // Small delay so DOM updates before print dialog
           setTimeout(() => window.print(), 120);
         });
+      // ============================================
+      //  NETLIFY IDENTITY - SECURE LOGIN
+      // ============================================
+      window.addEventListener("load", () => {
+        const netlifyIdentity = window.netlifyIdentity;
+        if (!netlifyIdentity) {
+          document.getElementById("login-error").textContent =
+            "⚠️ Identity load nahi hua, page refresh karo.";
+          return;
+        }
+
+        const user = netlifyIdentity.currentUser();
+        if (user) showDashboard(user);
+
+        netlifyIdentity.on("login", (user) => {
+          netlifyIdentity.close();
+          showDashboard(user);
+        });
+
+        netlifyIdentity.on("logout", () => {
+          document.getElementById("dashboard").style.display = "none";
+          document.getElementById("login-screen").style.display = "flex";
+        });
+
+        netlifyIdentity.on("init", (user) => {
+          if (user) showDashboard(user);
+        });
+      });
+
+      function netlifyLogin() {
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.open("login");
+        } else {
+          document.getElementById("login-error").textContent =
+            "⚠️ Page refresh karo aur dobara try karo.";
+        }
+      }
+
+      function showDashboard(user) {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("dashboard").style.display = "flex";
+        const emailEl = document.getElementById("admin-email-display");
+        if (emailEl && user.email) emailEl.textContent = user.email;
+        init();
+      }
+
+      function adminLogout() {
+        if (window.netlifyIdentity) window.netlifyIdentity.logout();
+      }
+
+      // ============================================
+      //  INIT
+      // ============================================
+      function init() {
+        fetchCourses();
+        fetchGallery();
+      }
     </script>
   </body>
 </html>
