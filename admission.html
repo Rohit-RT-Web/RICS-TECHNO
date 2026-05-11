@@ -9,9 +9,6 @@
       rel="stylesheet"
     />
     <style>
-      /* ============================================
-       SCREEN STYLES
-    ============================================ */
       :root {
         --ink: #0f1117;
         --paper: #faf9f6;
@@ -21,11 +18,9 @@
         --border: #ddd8ce;
         --accent: #1a3a5c;
         --white: #ffffff;
-        --success: #2d6a4f;
         --radius: 12px;
         --shadow: 0 8px 40px rgba(15, 17, 23, 0.1);
       }
-
       *,
       *::before,
       *::after {
@@ -33,24 +28,154 @@
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family: "DM Sans", sans-serif;
         background: var(--paper);
         color: var(--ink);
         min-height: 100vh;
-        padding: 0;
       }
 
-      /* ---- TOP BAR ---- */
+      /* ===== LOGIN SCREEN ===== */
+      #login-screen {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          #0a1f44 0%,
+          #0d2960 50%,
+          #1a3a6e 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      #login-screen::before {
+        content: "";
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: rgba(201, 151, 58, 0.07);
+        border-radius: 50%;
+        top: -150px;
+        right: -150px;
+      }
+      #login-screen::after {
+        content: "";
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        background: rgba(201, 151, 58, 0.04);
+        border-radius: 50%;
+        bottom: -80px;
+        left: -80px;
+      }
+      .login-box {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 50px 45px;
+        width: 90%;
+        max-width: 400px;
+        z-index: 1;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+      .login-logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 auto 20px;
+        box-shadow: 0 0 0 4px rgba(201, 151, 58, 0.3);
+      }
+      .login-box h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.7rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .login-box h1 span {
+        color: var(--gold);
+      }
+      .login-box p {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.82rem;
+        margin: 6px 0 32px;
+        letter-spacing: 0.3px;
+      }
+      .login-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #c9973a 0%, #e8b84b 100%);
+        color: #000;
+        border: none;
+        border-radius: 12px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(201, 151, 58, 0.4);
+      }
+      .login-btn svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      #login-error {
+        color: #ff6b6b;
+        font-size: 0.82rem;
+        margin-top: 14px;
+        min-height: 18px;
+      }
+      .login-security-note {
+        margin-top: 20px;
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      /* ===== APP (hidden until logged in) ===== */
+      #app {
+        display: none;
+      }
+
+      /* ===== TOP BAR ===== */
       .topbar {
         background: var(--accent);
         color: #fff;
         padding: 14px 40px;
         display: flex;
         align-items: center;
-        gap: 16px;
+        justify-content: space-between;
         box-shadow: 0 2px 12px rgba(26, 58, 92, 0.18);
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
       }
       .topbar-logo {
         width: 44px;
@@ -63,30 +188,65 @@
         font-family: "Playfair Display", serif;
         font-size: 1.2rem;
         font-weight: 700;
-        color: var(--white);
+        color: #fff;
         flex-shrink: 0;
       }
       .topbar-text h1 {
         font-family: "Playfair Display", serif;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 700;
-        letter-spacing: 0.5px;
       }
       .topbar-text p {
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.5);
         letter-spacing: 1px;
         text-transform: uppercase;
         margin-top: 1px;
       }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      #user-email-display {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .logout-btn {
+        padding: 7px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .logout-btn:hover {
+        background: rgba(230, 57, 70, 0.2);
+        border-color: rgba(230, 57, 70, 0.4);
+        color: #ff6b6b;
+      }
+      .logout-btn svg {
+        width: 14px;
+        height: 14px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
 
-      /* ---- MAIN LAYOUT ---- */
+      /* ===== FORM AREA ===== */
       .container {
         max-width: 760px;
         margin: 48px auto;
         padding: 0 20px;
       }
-
       .section-label {
         font-size: 0.72rem;
         font-weight: 600;
@@ -95,7 +255,6 @@
         color: var(--gold);
         margin-bottom: 10px;
       }
-
       .card {
         background: var(--white);
         border-radius: var(--radius);
@@ -103,7 +262,6 @@
         border: 1px solid var(--border);
         padding: 40px 44px;
       }
-
       .card-title {
         font-family: "Playfair Display", serif;
         font-size: 1.6rem;
@@ -116,8 +274,6 @@
         margin-bottom: 32px;
         line-height: 1.5;
       }
-
-      /* ---- FORM GRID ---- */
       .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -131,7 +287,6 @@
       .form-group.full {
         grid-column: 1 / -1;
       }
-
       label {
         font-size: 0.78rem;
         font-weight: 600;
@@ -139,9 +294,7 @@
         text-transform: uppercase;
         color: var(--accent);
       }
-
-      input,
-      select {
+      input {
         padding: 12px 16px;
         border: 1.5px solid var(--border);
         border-radius: 8px;
@@ -154,8 +307,7 @@
           border-color 0.2s,
           box-shadow 0.2s;
       }
-      input:focus,
-      select:focus {
+      input:focus {
         border-color: var(--gold);
         box-shadow: 0 0 0 3px rgba(201, 151, 58, 0.15);
         background: #fff;
@@ -163,8 +315,6 @@
       input::placeholder {
         color: #bbb;
       }
-
-      /* ---- DATETIME ROW ---- */
       .datetime-row {
         display: flex;
         align-items: center;
@@ -202,8 +352,6 @@
         color: var(--accent);
         font-weight: 500;
       }
-
-      /* ---- BUTTON ---- */
       .btn-print {
         display: flex;
         align-items: center;
@@ -239,16 +387,13 @@
       .btn-print:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 28px rgba(26, 58, 92, 0.3);
+        color: var(--ink);
       }
       .btn-print span,
       .btn-print svg {
         position: relative;
         z-index: 1;
       }
-      .btn-print:hover {
-        color: var(--ink);
-      }
-
       .btn-icon {
         width: 20px;
         height: 20px;
@@ -258,8 +403,6 @@
         stroke-linecap: round;
         stroke-linejoin: round;
       }
-
-      /* ---- VALIDATION ---- */
       .field-error {
         font-size: 0.75rem;
         color: #c0392b;
@@ -270,9 +413,7 @@
         border-color: #c0392b !important;
       }
 
-      /* ============================================
-       PRINT RECEIPT AREA (hidden on screen)
-    ============================================ */
+      /* ===== PRINT AREA ===== */
       #print-area {
         display: none;
       }
@@ -285,27 +426,22 @@
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
-
         body {
           background: #fff;
           margin: 0;
           padding: 0;
         }
-
-        /* Hide everything except receipts */
-        .topbar,
-        .container,
-        #print-area ~ * {
+        #login-screen,
+        #app .topbar,
+        #app .container {
           display: none !important;
         }
-
         #print-area {
           display: block !important;
           width: 100%;
           margin: 0;
           padding: 0;
         }
-
         .receipt-copy {
           width: 100%;
           padding: 18px 28px 22px;
@@ -313,13 +449,9 @@
           background: #fff;
           position: relative;
         }
-
-        /* Dashed cut line between copies */
         .receipt-copy + .receipt-copy {
           border-top: 1.5px dashed #000;
         }
-
-        /* Cut guide label */
         .cut-guide {
           text-align: center;
           font-size: 7pt;
@@ -329,12 +461,11 @@
           padding: 2px 0;
           border-top: 1.5px dashed #000;
           font-family: "DM Sans", sans-serif;
+          font-weight: 600;
         }
         .cut-guide:last-child {
           display: none;
         }
-
-        /* Receipt Header */
         .r-header {
           display: flex;
           align-items: flex-start;
@@ -366,7 +497,6 @@
           font-size: 12pt;
           font-weight: 700;
           color: #c9973a;
-          letter-spacing: 0.5px;
         }
         .r-receipt-no {
           font-family: "DM Mono", monospace;
@@ -374,8 +504,6 @@
           color: #888;
           margin-top: 2px;
         }
-
-        /* Copy label badge */
         .r-copy-badge {
           display: inline-block;
           background: #1a3a5c;
@@ -389,8 +517,6 @@
           margin-bottom: 8px;
           font-family: "DM Sans", sans-serif;
         }
-
-        /* Details grid */
         .r-body {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -418,11 +544,6 @@
           padding-bottom: 2px;
           font-family: "DM Sans", sans-serif;
         }
-        .r-field.full {
-          grid-column: 1 / -1;
-        }
-
-        /* Fees highlight */
         .r-fees-box {
           background: #f0f8f4;
           border: 1px solid #2d6a4f;
@@ -447,8 +568,6 @@
           color: #2d6a4f;
           font-family: "Playfair Display", serif;
         }
-
-        /* Footer */
         .r-footer {
           display: flex;
           align-items: flex-end;
@@ -489,8 +608,6 @@
           font-family: "DM Sans", sans-serif;
           font-weight: 500;
         }
-
-        /* Watermark */
         .r-watermark {
           position: absolute;
           top: 50%;
@@ -508,117 +625,145 @@
     </style>
   </head>
   <body>
-    <!-- TOP BAR -->
-    <div class="topbar">
-      <div class="topbar-logo">R</div>
-      <div class="topbar-text">
-        <h1>RICS Technologies</h1>
-        <p>Student Admission Management</p>
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div id="login-screen">
+      <div class="login-box">
+        <div class="login-logo">R</div>
+        <h1>RICS <span>Admin</span></h1>
+        <p>Admission Receipt Generator — Secure Access</p>
+        <button class="login-btn" onclick="netlifyLogin()">
+          <svg viewBox="0 0 24 24">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+          Secure Login Karo
+        </button>
+        <p id="login-error"></p>
+        <p class="login-security-note">Powered by Netlify Identity</p>
       </div>
     </div>
 
-    <!-- MAIN FORM -->
-    <div class="container">
-      <p class="section-label">New Admission</p>
-      <div class="card">
-        <h2 class="card-title">Admission Receipt Generator</h2>
-        <p class="card-subtitle">
-          Fill in the student details below. Click "Generate & Print" to produce
-          3 copies of the admission receipt on a single A4 page.
-        </p>
-
-        <form id="admission-form" novalidate>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="student-name">Student Name</label>
-              <input
-                type="text"
-                id="student-name"
-                placeholder="e.g. Rahul Kumar"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="father-name">Father's Name</label>
-              <input
-                type="text"
-                id="father-name"
-                placeholder="e.g. Rajesh Kumar"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="course-name">Course Name</label>
-              <input
-                type="text"
-                id="course-name"
-                placeholder="e.g. Web Development"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="course-duration">Course Duration</label>
-              <input
-                type="text"
-                id="course-duration"
-                placeholder="e.g. 6 Months"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="total-fees">Total Fees (₹)</label>
-              <input
-                type="number"
-                id="total-fees"
-                placeholder="e.g. 7500"
-                min="0"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="receipt-no">Receipt No.</label>
-              <input
-                type="text"
-                id="receipt-no"
-                placeholder="e.g. RICS-2026-001"
-                autocomplete="off"
-              />
-            </div>
+    <!-- ===== APP (shown after login) ===== -->
+    <div id="app">
+      <!-- Top Bar -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-logo">R</div>
+          <div class="topbar-text">
+            <h1>RICS Technologies</h1>
+            <p>Student Admission Management</p>
           </div>
-
-          <!-- Live Date/Time -->
-          <div class="datetime-row">
-            <div class="dot"></div>
-            <span
-              >Admission Date &amp; Time will be captured automatically:</span
-            >
-            <span id="live-time">—</span>
-          </div>
-
-          <button type="submit" class="btn-print">
-            <svg class="btn-icon" viewBox="0 0 24 24">
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path
-                d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-              />
-              <rect x="6" y="14" width="12" height="8" />
+        </div>
+        <div class="topbar-right">
+          <span id="user-email-display"></span>
+          <button class="logout-btn" onclick="adminLogout()">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            <span>Generate &amp; Print Receipt (3 Copies)</span>
+            Logout
           </button>
-        </form>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="container">
+        <p class="section-label">New Admission</p>
+        <div class="card">
+          <h2 class="card-title">Admission Receipt Generator</h2>
+          <p class="card-subtitle">
+            Fill in the student details below. Click "Generate & Print" to
+            produce 3 copies of the admission receipt on a single A4 page.
+          </p>
+
+          <form id="admission-form" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="student-name">Student Name</label>
+                <input
+                  type="text"
+                  id="student-name"
+                  placeholder="e.g. Rahul Kumar"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="father-name">Father's Name</label>
+                <input
+                  type="text"
+                  id="father-name"
+                  placeholder="e.g. Rajesh Kumar"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-name">Course Name</label>
+                <input
+                  type="text"
+                  id="course-name"
+                  placeholder="e.g. Web Development"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-duration">Course Duration</label>
+                <input
+                  type="text"
+                  id="course-duration"
+                  placeholder="e.g. 6 Months"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="total-fees">Total Fees (₹)</label>
+                <input
+                  type="number"
+                  id="total-fees"
+                  placeholder="e.g. 7500"
+                  min="0"
+                />
+              </div>
+              <div class="form-group">
+                <label for="receipt-no">Receipt No.</label>
+                <input
+                  type="text"
+                  id="receipt-no"
+                  placeholder="e.g. RICS-2026-001"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="datetime-row">
+              <div class="dot"></div>
+              <span
+                >Admission Date &amp; Time will be captured automatically:</span
+              >
+              <span id="live-time">—</span>
+            </div>
+
+            <button type="submit" class="btn-print">
+              <svg class="btn-icon" viewBox="0 0 24 24">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              <span>Generate &amp; Print Receipt (3 Copies)</span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
+    <!-- /#app -->
 
-    <!-- ============================================
-     PRINT AREA — 3 Receipt Copies
-============================================ -->
+    <!-- ===== PRINT AREA ===== -->
     <div id="print-area">
       <!-- COPY 1 -->
-      <div class="receipt-copy" id="copy-1">
+      <div class="receipt-copy">
         <div class="r-watermark">RICS</div>
         <span class="r-copy-badge">Office Copy</span>
         <div class="r-header">
@@ -635,20 +780,20 @@
         </div>
         <div class="r-body">
           <div class="r-field">
-            <span class="r-field-label">Student Name</span>
-            <span class="r-field-value" id="c1-name">—</span>
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c1-name">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Father's Name</span>
-            <span class="r-field-value" id="c1-father">—</span>
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c1-father">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Course Name</span>
-            <span class="r-field-value" id="c1-course">—</span>
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c1-course">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Duration</span>
-            <span class="r-field-value" id="c1-duration">—</span>
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c1-duration">—</span>
           </div>
         </div>
         <div class="r-fees-box">
@@ -657,8 +802,8 @@
         </div>
         <div class="r-footer">
           <div class="r-timestamp">
-            <strong>Admission Date &amp; Time</strong>
-            <span id="c1-datetime">—</span>
+            <strong>Admission Date &amp; Time</strong
+            ><span id="c1-datetime">—</span>
           </div>
           <div class="r-signature">
             <div class="r-signature-line"></div>
@@ -670,7 +815,7 @@
       <div class="cut-guide">✂ &nbsp; Cut Here &nbsp; ✂</div>
 
       <!-- COPY 2 -->
-      <div class="receipt-copy" id="copy-2">
+      <div class="receipt-copy">
         <div class="r-watermark">RICS</div>
         <span class="r-copy-badge">Student Copy</span>
         <div class="r-header">
@@ -687,20 +832,20 @@
         </div>
         <div class="r-body">
           <div class="r-field">
-            <span class="r-field-label">Student Name</span>
-            <span class="r-field-value" id="c2-name">—</span>
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c2-name">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Father's Name</span>
-            <span class="r-field-value" id="c2-father">—</span>
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c2-father">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Course Name</span>
-            <span class="r-field-value" id="c2-course">—</span>
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c2-course">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Duration</span>
-            <span class="r-field-value" id="c2-duration">—</span>
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c2-duration">—</span>
           </div>
         </div>
         <div class="r-fees-box">
@@ -709,8 +854,8 @@
         </div>
         <div class="r-footer">
           <div class="r-timestamp">
-            <strong>Admission Date &amp; Time</strong>
-            <span id="c2-datetime">—</span>
+            <strong>Admission Date &amp; Time</strong
+            ><span id="c2-datetime">—</span>
           </div>
           <div class="r-signature">
             <div class="r-signature-line"></div>
@@ -722,7 +867,7 @@
       <div class="cut-guide">✂ &nbsp; Cut Here &nbsp; ✂</div>
 
       <!-- COPY 3 -->
-      <div class="receipt-copy" id="copy-3">
+      <div class="receipt-copy">
         <div class="r-watermark">RICS</div>
         <span class="r-copy-badge">Accounts Copy</span>
         <div class="r-header">
@@ -739,20 +884,20 @@
         </div>
         <div class="r-body">
           <div class="r-field">
-            <span class="r-field-label">Student Name</span>
-            <span class="r-field-value" id="c3-name">—</span>
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c3-name">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Father's Name</span>
-            <span class="r-field-value" id="c3-father">—</span>
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c3-father">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Course Name</span>
-            <span class="r-field-value" id="c3-course">—</span>
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c3-course">—</span>
           </div>
           <div class="r-field">
-            <span class="r-field-label">Duration</span>
-            <span class="r-field-value" id="c3-duration">—</span>
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c3-duration">—</span>
           </div>
         </div>
         <div class="r-fees-box">
@@ -761,8 +906,8 @@
         </div>
         <div class="r-footer">
           <div class="r-timestamp">
-            <strong>Admission Date &amp; Time</strong>
-            <span id="c3-datetime">—</span>
+            <strong>Admission Date &amp; Time</strong
+            ><span id="c3-datetime">—</span>
           </div>
           <div class="r-signature">
             <div class="r-signature-line"></div>
@@ -775,25 +920,77 @@
     </div>
     <!-- /#print-area -->
 
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <script>
+      // ============================================
+      //  NETLIFY IDENTITY - SECURE LOGIN
+      // ============================================
+      window.addEventListener("load", () => {
+        const ni = window.netlifyIdentity;
+        if (!ni) {
+          document.getElementById("login-error").textContent =
+            "⚠️ Page refresh karo.";
+          return;
+        }
+
+        // Pehle se logged in?
+        const user = ni.currentUser();
+        if (user) showApp(user);
+
+        ni.on("login", (user) => {
+          ni.close();
+          showApp(user);
+        });
+        ni.on("logout", () => {
+          document.getElementById("app").style.display = "none";
+          document.getElementById("login-screen").style.display = "flex";
+        });
+        ni.on("init", (user) => {
+          if (user) showApp(user);
+        });
+      });
+
+      function netlifyLogin() {
+        if (window.netlifyIdentity) window.netlifyIdentity.open("login");
+        else
+          document.getElementById("login-error").textContent =
+            "⚠️ Page refresh karo.";
+      }
+
+      function adminLogout() {
+        if (window.netlifyIdentity) window.netlifyIdentity.logout();
+      }
+
+      function showApp(user) {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        const el = document.getElementById("user-email-display");
+        if (el && user.email) el.textContent = user.email;
+        startClock();
+      }
+
       // ============================================
       //  LIVE CLOCK
       // ============================================
-      function updateClock() {
-        const now = new Date();
-        const formatted = now.toLocaleString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        document.getElementById("live-time").textContent = formatted;
+      function startClock() {
+        function tick() {
+          const now = new Date();
+          const formatted = now.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          document.getElementById("live-time").textContent = formatted;
+        }
+        tick();
+        setInterval(tick, 1000);
       }
-      updateClock();
-      setInterval(updateClock, 1000);
 
       // ============================================
       //  VALIDATION
@@ -813,15 +1010,13 @@
         const err = input.parentElement.querySelector(".field-error");
         if (err) err.remove();
       }
-
-      // Live clear on input
       document.querySelectorAll("#admission-form input").forEach((inp) => {
         inp.addEventListener("input", () => clearError(inp));
       });
 
       function validateForm(data) {
         let valid = true;
-        const fields = [
+        [
           {
             el: document.getElementById("student-name"),
             val: data.name,
@@ -847,14 +1042,11 @@
             val: data.fees,
             msg: "Fees zaroori hai!",
           },
-        ];
-        fields.forEach((f) => {
+        ].forEach((f) => {
           if (!f.val || f.val.toString().trim() === "") {
             setError(f.el, f.msg);
             valid = false;
-          } else {
-            clearError(f.el);
-          }
+          } else clearError(f.el);
         });
         if (data.fees && isNaN(data.fees)) {
           setError(
@@ -867,25 +1059,16 @@
       }
 
       // ============================================
-      //  FORMAT CURRENCY
-      // ============================================
-      function formatINR(amount) {
-        return "₹ " + Number(amount).toLocaleString("en-IN");
-      }
-
-      // ============================================
-      //  INJECT DATA INTO ALL 3 COPIES
+      //  FILL ALL 3 COPIES
       // ============================================
       function fillReceipts(data) {
-        const copies = [1, 2, 3];
-        copies.forEach((n) => {
+        [1, 2, 3].forEach((n) => {
           document.getElementById(`c${n}-name`).textContent = data.name;
           document.getElementById(`c${n}-father`).textContent = data.father;
           document.getElementById(`c${n}-course`).textContent = data.course;
           document.getElementById(`c${n}-duration`).textContent = data.duration;
-          document.getElementById(`c${n}-fees`).textContent = formatINR(
-            data.fees,
-          );
+          document.getElementById(`c${n}-fees`).textContent =
+            "₹ " + Number(data.fees).toLocaleString("en-IN");
           document.getElementById(`c${n}-datetime`).textContent = data.datetime;
           document.getElementById(`c${n}-receipt-no`).textContent =
             data.receiptNo ? "Receipt No: " + data.receiptNo : "Receipt No: —";
@@ -899,7 +1082,6 @@
         .getElementById("admission-form")
         .addEventListener("submit", function (e) {
           e.preventDefault();
-
           const data = {
             name: document.getElementById("student-name").value.trim(),
             father: document.getElementById("father-name").value.trim(),
@@ -918,12 +1100,8 @@
               hour12: true,
             }),
           };
-
           if (!validateForm(data)) return;
-
           fillReceipts(data);
-
-          // Small delay so DOM updates before print dialog
           setTimeout(() => window.print(), 120);
         });
     </script>
