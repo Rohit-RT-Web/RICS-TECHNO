@@ -6,7 +6,7 @@
 // ============================================================
 
 const scriptURL =
-  "https://script.google.com/macros/s/AKfycbzIvA-rLO0vjL218yUF9HqANzf7TpTzeXroybKCZ3y0735Z6vHudfCEitULpeofTI9P/exec";
+  "https://script.google.com/macros/s/AKfycbwZr-dwWMzSpmxG4d3GNXAeRTOLVnO2pmc2rpNlxuCd-u8vfrye58Py3QxofuqcTYJi/exec";
 
 const admissionForm = document.getElementById("admission-form");
 const admissionBtn = document.getElementById("submit-btn");

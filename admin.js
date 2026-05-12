@@ -4,7 +4,7 @@
 // ============================================
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzIvA-rLO0vjL218yUF9HqANzf7TpTzeXroybKCZ3y0735Z6vHudfCEitULpeofTI9P/exec";
+  "https://script.google.com/macros/s/AKfycbwZr-dwWMzSpmxG4d3GNXAeRTOLVnO2pmc2rpNlxuCd-u8vfrye58Py3QxofuqcTYJi/exec";
 const CLOUD_NAME = "dlibp1sfl";
 const UPLOAD_PRESET = "el9fxzux";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
