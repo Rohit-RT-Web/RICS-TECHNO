@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RICS — Student Admission</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f1117;
+        --paper: #faf9f6;
+        --gold: #c9973a;
+        --gold-lt: #f0d9a8;
+        --muted: #6b6b6b;
+        --border: #ddd8ce;
+        --accent: #1a3a5c;
+        --white: #ffffff;
+        --green: #2d6a4f;
+        --green-lt: #f0f8f4;
+        --red: #c0392b;
+        --red-lt: #fdf2f0;
+        --radius: 12px;
+        --shadow: 0 8px 40px rgba(15, 17, 23, 0.1);
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+
+      /* TOPBAR */
+      .topbar {
+        background: var(--accent);
+        color: #fff;
+        padding: 14px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 12px rgba(26, 58, 92, 0.18);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .topbar-logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+      }
+      .topbar-text h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+      .topbar-text p {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-top: 1px;
+      }
+
+      /* TABS */
+      .tabs {
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        padding: 0 40px;
+      }
+      .tab-btn {
+        padding: 14px 24px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .tab-btn:hover {
+        color: var(--accent);
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--gold);
+      }
+      .tab-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .back-btn {
+        padding: 7px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.75);
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+      }
+      /* MAIN */
+      .main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 36px 20px 60px;
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* STATS */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .stat-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 22px 24px;
+        box-shadow: 0 2px 12px rgba(15, 17, 23, 0.06);
+        position: relative;
+        overflow: hidden;
+      }
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--gold);
+      }
+      .stat-card.green::before {
+        background: var(--green);
+      }
+      .stat-card.red::before {
+        background: var(--red);
+      }
+      .stat-card.blue::before {
+        background: var(--accent);
+      }
+      .stat-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-family: "Playfair Display", serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .stat-value.green {
+        color: var(--green);
+      }
+      .stat-value.red {
+        color: var(--red);
+      }
+      .stat-value.blue {
+        color: var(--accent);
+      }
+      .stat-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      /* TABLE */
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.3rem;
+        color: var(--accent);
+      }
+      .section-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 10px;
+      }
+      .table-wrap {
+        background: var(--white);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      thead tr {
+        background: var(--accent);
+      }
+      thead th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.15s;
+      }
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+      tbody tr:hover {
+        background: rgba(201, 151, 58, 0.04);
+      }
+      tbody td {
+        padding: 12px 16px;
+        font-size: 0.88rem;
+        color: var(--ink);
+      }
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+      .badge-paid {
+        background: var(--green-lt);
+        color: var(--green);
+      }
+      .badge-due {
+        background: var(--red-lt);
+        color: var(--red);
+      }
+      .badge-partial {
+        background: rgba(201, 151, 58, 0.12);
+        color: #9a6f1e;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .empty-state svg {
+        width: 40px;
+        height: 40px;
+        stroke: var(--border);
+        fill: none;
+        stroke-width: 1.5;
+        display: block;
+        margin: 0 auto 12px;
+      }
+      .btn-pay {
+        padding: 5px 14px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-pay:hover {
+        background: var(--gold);
+        color: #000;
+      }
+      .btn-pay.done {
+        background: var(--green-lt);
+        color: var(--green);
+        cursor: default;
+        border: 1px solid rgba(45, 106, 79, 0.2);
+      }
+      .btn-delete {
+        padding: 5px 12px;
+        background: #fdf2f0;
+        color: var(--red);
+        border: 1.5px solid rgba(192, 57, 43, 0.3);
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-delete:hover {
+        background: var(--red);
+        color: #fff;
+        border-color: var(--red);
+      }
+
+      /* PAYMENT MODAL */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.55);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 36px;
+        width: 90%;
+        max-width: 460px;
+        box-shadow: 0 20px 60px rgba(15, 17, 23, 0.2);
+      }
+      .modal h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.3rem;
+        color: var(--accent);
+        margin-bottom: 4px;
+      }
+      .modal > p {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .modal-info {
+        background: rgba(26, 58, 92, 0.06);
+        border: 1px solid rgba(26, 58, 92, 0.12);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .modal-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .modal-field label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .modal-field input {
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-family: "DM Sans", sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .modal-field input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 151, 58, 0.15);
+        background: #fff;
+      }
+      .modal-field input[readonly] {
+        background: #f5f4f0;
+        color: var(--muted);
+        cursor: not-allowed;
+      }
+      .modal-due-new {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: "DM Mono", monospace;
+        font-weight: 700;
+        border: 1.5px solid rgba(192, 57, 43, 0.25);
+        background: var(--red-lt);
+        color: var(--red);
+      }
+      .modal-due-new.zero {
+        background: var(--green-lt);
+        color: var(--green);
+        border-color: rgba(45, 106, 79, 0.25);
+      }
+      .modal-btns {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .btn-modal-cancel {
+        flex: 1;
+        padding: 12px;
+        background: transparent;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        color: var(--muted);
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-modal-cancel:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .btn-modal-save {
+        flex: 2;
+        padding: 12px;
+        background: var(--accent);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .btn-modal-save:hover {
+        background: #0d2845;
+      }
+      .btn-modal-save svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+      }
+
+      /* FORM */
+      .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        padding: 40px 44px;
+      }
+      .card-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.6rem;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+      .card-subtitle {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 32px;
+        line-height: 1.5;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .form-group.full {
+        grid-column: 1/-1;
+      }
+      label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      input {
+        padding: 12px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: "DM Sans", sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 151, 58, 0.15);
+        background: #fff;
+      }
+      input::placeholder {
+        color: #bbb;
+      }
+      .fees-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        grid-column: 1/-1;
+      }
+      .due-value {
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: "DM Mono", monospace;
+        font-weight: 600;
+        background: var(--red-lt);
+        color: var(--red);
+        border: 1.5px solid rgba(192, 57, 43, 0.2);
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+      }
+      .due-value.zero {
+        background: var(--green-lt);
+        color: var(--green);
+        border-color: rgba(45, 106, 79, 0.2);
+      }
+      .datetime-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(201, 151, 58, 0.08);
+        border: 1px solid var(--gold-lt);
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin-top: 20px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .datetime-row .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--gold);
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+        flex-shrink: 0;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.7);
+        }
+      }
+      #live-time {
+        font-family: "DM Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .btn-print {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 28px;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--accent) 0%, #0d2845 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-print::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--gold) 0%, #e8b84b 100%);
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      .btn-print:hover::before {
+        opacity: 1;
+      }
+      .btn-print:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(26, 58, 92, 0.3);
+        color: var(--ink);
+      }
+      .btn-print span,
+      .btn-print svg {
+        position: relative;
+        z-index: 1;
+      }
+      .btn-icon {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .field-error {
+        font-size: 0.75rem;
+        color: var(--red);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+      input.error {
+        border-color: var(--red) !important;
+      }
+      .sync-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-top: 14px;
+      }
+      .sync-status.idle {
+        display: none;
+      }
+      .sync-status.sending {
+        background: rgba(201, 151, 58, 0.1);
+        color: #9a6f1e;
+      }
+      .sync-status.success {
+        background: var(--green-lt);
+        color: var(--green);
+      }
+      .sync-status.error {
+        background: var(--red-lt);
+        color: var(--red);
+      }
+      .sync-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+      .sync-status.sending .sync-dot {
+        animation: pulse-dot 1s infinite;
+      }
+
+      @media (max-width: 700px) {
+        .topbar {
+          padding: 12px 16px;
+        }
+        .tabs {
+          padding: 0 8px;
+          overflow-x: auto;
+        }
+        .main {
+          padding: 20px 10px 60px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .card {
+          padding: 24px 16px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .fees-row {
+          grid-template-columns: 1fr;
+        }
+        thead th:nth-child(4),
+        tbody td:nth-child(4) {
+          display: none;
+        }
+      }
+
+      /* PRINT */
+      #print-area {
+        display: none;
+      }
+      @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        body {
+          background: #fff;
+          margin: 0;
+          padding: 0;
+        }
+        .topbar,
+        .tabs,
+        .main,
+        .modal-overlay {
+          display: none !important;
+        }
+        #print-area {
+          display: block !important;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        .receipt-copy {
+          width: 100%;
+          padding: 18px 28px 22px;
+          page-break-inside: avoid;
+          background: #fff;
+          position: relative;
+        }
+        .receipt-copy + .receipt-copy {
+          border-top: 1.5px dashed #000;
+        }
+        .cut-guide {
+          text-align: center;
+          font-size: 7pt;
+          color: #888;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 2px 0;
+          border-top: 1.5px dashed #000;
+          font-family: "DM Sans", sans-serif;
+          font-weight: 600;
+        }
+        .cut-guide:last-child {
+          display: none;
+        }
+        .r-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          padding-bottom: 10px;
+          border-bottom: 2px solid #0f1117;
+        }
+        .r-institute-name {
+          font-family: "Playfair Display", serif;
+          font-size: 15pt;
+          font-weight: 700;
+          color: #1a3a5c;
+          line-height: 1.1;
+        }
+        .r-institute-sub {
+          font-size: 7pt;
+          color: #666;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-top: 2px;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-receipt-title {
+          text-align: right;
+        }
+        .r-receipt-title h2 {
+          font-family: "Playfair Display", serif;
+          font-size: 12pt;
+          font-weight: 700;
+          color: #c9973a;
+        }
+        .r-receipt-no {
+          font-family: "DM Mono", monospace;
+          font-size: 7.5pt;
+          color: #888;
+          margin-top: 2px;
+        }
+        .r-copy-badge {
+          display: inline-block;
+          background: #1a3a5c;
+          color: #fff;
+          font-size: 6.5pt;
+          font-weight: 600;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          padding: 2px 8px;
+          border-radius: 3px;
+          margin-bottom: 8px;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-body {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px 20px;
+          margin: 8px 0 10px;
+        }
+        .r-field {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+        }
+        .r-field-label {
+          font-size: 6.5pt;
+          font-weight: 600;
+          color: #888;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-field-value {
+          font-size: 9.5pt;
+          font-weight: 600;
+          color: #0f1117;
+          border-bottom: 0.5px solid #ddd;
+          padding-bottom: 2px;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-fees-box {
+          background: #f0f8f4;
+          border: 1px solid #2d6a4f;
+          border-radius: 4px;
+          padding: 5px 10px;
+          margin: 8px 0 4px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .r-fees-due-box {
+          background: #fdf2f0;
+          border: 1px solid #c0392b;
+          border-radius: 4px;
+          padding: 5px 10px;
+          margin: 4px 0 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .r-fees-label {
+          font-size: 7pt;
+          font-weight: 600;
+          color: #2d6a4f;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-fees-due-label {
+          font-size: 7pt;
+          font-weight: 600;
+          color: #c0392b;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-family: "DM Sans", sans-serif;
+        }
+        .r-fees-value {
+          font-size: 13pt;
+          font-weight: 700;
+          color: #2d6a4f;
+          font-family: "Playfair Display", serif;
+        }
+        .r-fees-due-value {
+          font-size: 11pt;
+          font-weight: 700;
+          color: #c0392b;
+          font-family: "Playfair Display", serif;
+        }
+        .r-footer {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-top: 10px;
+          padding-top: 8px;
+          border-top: 0.5px solid #ddd;
+        }
+        .r-timestamp {
+          font-family: "DM Mono", monospace;
+          font-size: 7pt;
+          color: #888;
+          line-height: 1.6;
+        }
+        .r-timestamp strong {
+          display: block;
+          font-size: 6.5pt;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #aaa;
+          font-family: "DM Sans", sans-serif;
+          font-weight: 600;
+        }
+        .r-signature {
+          text-align: right;
+          min-width: 130px;
+        }
+        .r-signature-line {
+          border-bottom: 1px solid #0f1117;
+          width: 130px;
+          margin-bottom: 4px;
+          margin-left: auto;
+        }
+        .r-signature-label {
+          font-size: 7pt;
+          color: #555;
+          text-align: right;
+          font-family: "DM Sans", sans-serif;
+          font-weight: 500;
+        }
+        .r-watermark {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-30deg);
+          font-family: "Playfair Display", serif;
+          font-size: 42pt;
+          font-weight: 700;
+          color: rgba(201, 151, 58, 0.06);
+          pointer-events: none;
+          white-space: nowrap;
+          letter-spacing: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo">R</div>
+        <div class="topbar-text">
+          <h1>RICS Technologies</h1>
+          <p>Student Admission Management</p>
+        </div>
+      </div>
+      <a href="admin.html" class="back-btn">← Admin Panel</a>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard', this)">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>
+        Dashboard
+      </button>
+      <button class="tab-btn" onclick="switchTab('admission', this)">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="12" y1="18" x2="12" y2="12" />
+          <line x1="9" y1="15" x2="15" y2="15" />
+        </svg>
+        New Admission
+      </button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <!-- DASHBOARD -->
+      <div id="tab-dashboard" class="tab-panel active">
+        <p class="section-label">Overview</p>
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-label">Total Admissions</div>
+            <div class="stat-value blue" id="stat-total">0</div>
+            <div class="stat-sub">Students enrolled</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Fees Collected</div>
+            <div class="stat-value green" id="stat-collected">₹0</div>
+            <div class="stat-sub">Total paid amount</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-label">Fees Due</div>
+            <div class="stat-value red" id="stat-due">₹0</div>
+            <div class="stat-sub">Pending payments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Fully Paid</div>
+            <div class="stat-value" id="stat-paid-count">0</div>
+            <div class="stat-sub">No balance remaining</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2 class="section-title">All Students</h2>
+          <span
+            id="student-count"
+            style="font-size: 0.82rem; color: var(--muted)"
+            >0 records</span
+          >
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Receipt No</th>
+                <th>Student / Father</th>
+                <th>Course</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Due</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="students-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADMISSION FORM -->
+      <div id="tab-admission" class="tab-panel">
+        <p class="section-label">New Admission</p>
+        <div class="card">
+          <h2 class="card-title">Admission Receipt Generator</h2>
+          <p class="card-subtitle">
+            Naye student ke liye puri details bharo. Agar student pehle se
+            register hai (same Receipt No. ya Name+Father Name) to fees
+            automatically update ho jaayegi — naya record nahi banega.
+          </p>
+
+          <form id="admission-form" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="student-name">Student Name</label>
+                <input
+                  type="text"
+                  id="student-name"
+                  placeholder="e.g. Rahul Kumar"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="father-name">Father's Name</label>
+                <input
+                  type="text"
+                  id="father-name"
+                  placeholder="e.g. Rajesh Kumar"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-name">Course Name</label>
+                <input
+                  type="text"
+                  id="course-name"
+                  placeholder="e.g. Web Development"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-duration">Course Duration</label>
+                <input
+                  type="text"
+                  id="course-duration"
+                  placeholder="e.g. 6 Months"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="form-group">
+                <label for="receipt-no">Receipt No.</label>
+                <input
+                  type="text"
+                  id="receipt-no"
+                  placeholder="e.g. RICS-2026-001"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div class="form-group full">
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    color: var(--accent);
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    border-bottom: 1px solid var(--border);
+                    padding-bottom: 8px;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Fees Details
+                </div>
+                <div class="fees-row">
+                  <div class="form-group">
+                    <label for="total-fees">Total Fees (₹)</label>
+                    <input
+                      type="number"
+                      id="total-fees"
+                      placeholder="e.g. 7500"
+                      min="0"
+                      oninput="calcDue()"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="fees-paid">Ab Kitna Paid (₹)</label>
+                    <input
+                      type="number"
+                      id="fees-paid"
+                      placeholder="e.g. 3000"
+                      min="0"
+                      oninput="calcDue()"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Fees Due (auto)</label>
+                    <div class="due-value zero" id="due-display">₹ 0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="datetime-row">
+              <div class="dot"></div>
+              <span
+                >Admission / Payment Date &amp; Time auto-capture hoga:</span
+              >
+              <span id="live-time">—</span>
+            </div>
+
+            <button type="submit" class="btn-print">
+              <svg class="btn-icon" viewBox="0 0 24 24">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              <span>Generate &amp; Print Receipt (3 Copies)</span>
+            </button>
+
+            <div class="sync-status idle" id="sync-status">
+              <div class="sync-dot"></div>
+              <span id="sync-msg"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT UPDATE MODAL -->
+    <div class="modal-overlay" id="pay-modal">
+      <div class="modal">
+        <h3>Fees Update Karo</h3>
+        <p>
+          Student ki nai payment record karo. Due amount automatically kam ho
+          jaayega.
+        </p>
+        <div class="modal-info" id="modal-student-info"></div>
+        <div class="modal-grid">
+          <div class="modal-field">
+            <label>Total Fees</label>
+            <input type="text" id="modal-total" readonly />
+          </div>
+          <div class="modal-field">
+            <label>Ab Tak Paid</label>
+            <input type="text" id="modal-prev-paid" readonly />
+          </div>
+          <div class="modal-field">
+            <label>Abhi Due</label>
+            <input type="text" id="modal-prev-due" readonly />
+          </div>
+          <div class="modal-field">
+            <label>Nai Payment (₹)</label>
+            <input
+              type="number"
+              id="modal-new-payment"
+              placeholder="e.g. 1500"
+              min="0"
+              oninput="calcModalDue()"
+            />
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Updated Due Amount</label>
+          <div class="modal-due-new" id="modal-new-due">₹ —</div>
+        </div>
+        <div class="modal-btns">
+          <button class="btn-modal-cancel" onclick="closeModal()">
+            Cancel
+          </button>
+          <button class="btn-modal-save" onclick="savePayment()">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+            Save &amp; Update
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT AREA -->
+    <div id="print-area">
+      <!-- COPY 1 -->
+      <div class="receipt-copy">
+        <div class="r-watermark">RICS</div>
+        <span class="r-copy-badge">Office Copy</span>
+        <div class="r-header">
+          <div>
+            <div class="r-institute-name">RICS Technologies</div>
+            <div class="r-institute-sub">
+              2nd Floor, Rajendra Tower, SDM Court, Noorpur Road, Dhampur (U.P.)
+            </div>
+          </div>
+          <div class="r-receipt-title">
+            <h2>Admission Receipt</h2>
+            <div class="r-receipt-no" id="c1-receipt-no">—</div>
+          </div>
+        </div>
+        <div class="r-body">
+          <div class="r-field">
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c1-name">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c1-father">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c1-course">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c1-duration">—</span>
+          </div>
+        </div>
+        <div class="r-fees-box">
+          <span class="r-fees-label">Total Fees Payable</span
+          ><span class="r-fees-value" id="c1-fees">₹ —</span>
+        </div>
+        <div class="r-fees-due-box">
+          <span class="r-fees-due-label">Paid / Remaining Due</span
+          ><span class="r-fees-due-value" id="c1-fees-due">₹ — / ₹ —</span>
+        </div>
+        <div class="r-footer">
+          <div class="r-timestamp">
+            <strong>Date &amp; Time</strong><span id="c1-datetime">—</span>
+          </div>
+          <div class="r-signature">
+            <div class="r-signature-line"></div>
+            <div class="r-signature-label">Authorised Signature</div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-guide">✂ &nbsp; Cut Here &nbsp; ✂</div>
+
+      <!-- COPY 2 -->
+      <div class="receipt-copy">
+        <div class="r-watermark">RICS</div>
+        <span class="r-copy-badge">Student Copy</span>
+        <div class="r-header">
+          <div>
+            <div class="r-institute-name">RICS Technologies</div>
+            <div class="r-institute-sub">
+              2nd Floor, Rajendra Tower, SDM Court, Noorpur Road, Dhampur (U.P.)
+            </div>
+          </div>
+          <div class="r-receipt-title">
+            <h2>Admission Receipt</h2>
+            <div class="r-receipt-no" id="c2-receipt-no">—</div>
+          </div>
+        </div>
+        <div class="r-body">
+          <div class="r-field">
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c2-name">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c2-father">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c2-course">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c2-duration">—</span>
+          </div>
+        </div>
+        <div class="r-fees-box">
+          <span class="r-fees-label">Total Fees Payable</span
+          ><span class="r-fees-value" id="c2-fees">₹ —</span>
+        </div>
+        <div class="r-fees-due-box">
+          <span class="r-fees-due-label">Paid / Remaining Due</span
+          ><span class="r-fees-due-value" id="c2-fees-due">₹ — / ₹ —</span>
+        </div>
+        <div class="r-footer">
+          <div class="r-timestamp">
+            <strong>Date &amp; Time</strong><span id="c2-datetime">—</span>
+          </div>
+          <div class="r-signature">
+            <div class="r-signature-line"></div>
+            <div class="r-signature-label">Authorised Signature</div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-guide">✂ &nbsp; Cut Here &nbsp; ✂</div>
+
+      <!-- COPY 3 -->
+      <div class="receipt-copy">
+        <div class="r-watermark">RICS</div>
+        <span class="r-copy-badge">Accounts Copy</span>
+        <div class="r-header">
+          <div>
+            <div class="r-institute-name">RICS Technologies</div>
+            <div class="r-institute-sub">
+              2nd Floor, Rajendra Tower, SDM Court, Noorpur Road, Dhampur (U.P.)
+            </div>
+          </div>
+          <div class="r-receipt-title">
+            <h2>Admission Receipt</h2>
+            <div class="r-receipt-no" id="c3-receipt-no">—</div>
+          </div>
+        </div>
+        <div class="r-body">
+          <div class="r-field">
+            <span class="r-field-label">Student Name</span
+            ><span class="r-field-value" id="c3-name">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Father's Name</span
+            ><span class="r-field-value" id="c3-father">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Course Name</span
+            ><span class="r-field-value" id="c3-course">—</span>
+          </div>
+          <div class="r-field">
+            <span class="r-field-label">Duration</span
+            ><span class="r-field-value" id="c3-duration">—</span>
+          </div>
+        </div>
+        <div class="r-fees-box">
+          <span class="r-fees-label">Total Fees Payable</span
+          ><span class="r-fees-value" id="c3-fees">₹ —</span>
+        </div>
+        <div class="r-fees-due-box">
+          <span class="r-fees-due-label">Paid / Remaining Due</span
+          ><span class="r-fees-due-value" id="c3-fees-due">₹ — / ₹ —</span>
+        </div>
+        <div class="r-footer">
+          <div class="r-timestamp">
+            <strong>Date &amp; Time</strong><span id="c3-datetime">—</span>
+          </div>
+          <div class="r-signature">
+            <div class="r-signature-line"></div>
+            <div class="r-signature-label">Authorised Signature</div>
+          </div>
+        </div>
+      </div>
+      <div class="cut-guide">✂ &nbsp; Cut Here &nbsp; ✂</div>
+    </div>
+
+    <script>
+      // ═══════════════════════════════════════════════
+      //  CONFIG — Google Sheet URL
+      // ═══════════════════════════════════════════════
+      const SHEET_URL =
+        "https://script.google.com/macros/s/AKfycbwZr-dwWMzSpmxG4d3GNXAeRTOLVnO2pmc2rpNlxuCd-u8vfrye58Py3QxofuqcTYJi/exec";
+
+      // ═══════════════════════════════════════════════
+      //  TABS
+      // ═══════════════════════════════════════════════
+      function switchTab(name, btn) {
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + name).classList.add("active");
+        btn.classList.add("active");
+      }
+
+      // ═══════════════════════════════════════════════
+      //  LOCAL STORAGE
+      // ═══════════════════════════════════════════════
+      function getStudents() {
+        try {
+          return JSON.parse(localStorage.getItem("rics_students") || "[]");
+        } catch {
+          return [];
+        }
+      }
+      function saveStudents(arr) {
+        localStorage.setItem("rics_students", JSON.stringify(arr));
+      }
+
+      // ═══════════════════════════════════════════════
+      //  SMART MATCH — Receipt No. OR Name+Father
+      // ═══════════════════════════════════════════════
+      function findStudent(data, students) {
+        const rNo = (data.receiptNo || "").trim().toLowerCase();
+        const sName = (data.studentName || "").trim().toLowerCase();
+        const fName = (data.fatherName || "").trim().toLowerCase();
+
+        return students.findIndex((s) => {
+          const matchReceipt =
+            rNo && (s.receiptNo || "").trim().toLowerCase() === rNo;
+          const matchNames =
+            sName &&
+            fName &&
+            (s.studentName || "").trim().toLowerCase() === sName &&
+            (s.fatherName || "").trim().toLowerCase() === fName;
+          return matchReceipt || matchNames;
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      //  DASHBOARD
+      // ═══════════════════════════════════════════════
+      function refreshDashboard() {
+        const students = getStudents();
+        const total = students.length;
+        const collected = students.reduce(
+          (s, r) => s + (parseFloat(r.feesPaid) || 0),
+          0,
+        );
+        const due = students.reduce(
+          (s, r) => s + (parseFloat(r.feesDue) || 0),
+          0,
+        );
+        const paidCount = students.filter(
+          (r) => (parseFloat(r.feesDue) || 0) === 0,
+        ).length;
+
+        document.getElementById("stat-total").textContent = total;
+        document.getElementById("stat-collected").textContent =
+          "₹" + collected.toLocaleString("en-IN");
+        document.getElementById("stat-due").textContent =
+          "₹" + due.toLocaleString("en-IN");
+        document.getElementById("stat-paid-count").textContent = paidCount;
+        document.getElementById("student-count").textContent =
+          total + " records";
+
+        const tbody = document.getElementById("students-tbody");
+        if (total === 0) {
+          tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Abhi koi admission nahi hai. "New Admission" tab se shuru karo.
+        </div></td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = students
+          .slice()
+          .reverse()
+          .map((s, revIdx) => {
+            const origIdx = students.length - 1 - revIdx;
+            const due = parseFloat(s.feesDue) || 0;
+            const paid = parseFloat(s.feesPaid) || 0;
+            const tot = parseFloat(s.totalFees) || 0;
+
+            const badge =
+              due === 0
+                ? '<span class="badge badge-paid">Paid</span>'
+                : paid === 0
+                  ? '<span class="badge badge-due">Due</span>'
+                  : '<span class="badge badge-partial">Partial</span>';
+
+            const payAction =
+              due > 0
+                ? `<button class="btn-pay" onclick="openModal(${origIdx})">+ Pay</button>`
+                : `<button class="btn-pay done" disabled>✓ Clear</button>`;
+
+            const deleteAction = `<button class="btn-delete" onclick="deleteStudent(${origIdx}, '${s.studentName.replace(/'/g, "\\'")}')">🗑 Delete</button>`;
+
+            return `<tr>
+          <td><span style="font-family:'DM Mono',monospace;font-size:0.82rem;">${s.receiptNo || "—"}</span></td>
+          <td><strong>${s.studentName}</strong><br><span style="font-size:0.78rem;color:var(--muted)">${s.fatherName}</span></td>
+          <td>${s.course}<br><span style="font-size:0.78rem;color:var(--muted)">${s.duration}</span></td>
+          <td>₹${Number(tot).toLocaleString("en-IN")}</td>
+          <td style="color:var(--green);font-weight:600;">₹${Number(paid).toLocaleString("en-IN")}</td>
+          <td style="color:${due > 0 ? "var(--red)" : "var(--green)"};font-weight:600;">₹${Number(due).toLocaleString("en-IN")}</td>
+          <td>${badge}</td>
+          <td style="display: flex; gap: 6px; flex-wrap: wrap;">${payAction} ${deleteAction}</td>
+        </tr>`;
+          })
+          .join("");
+      }
+
+      // ═══════════════════════════════════════════════
+      //  PAYMENT MODAL
+      // ═══════════════════════════════════════════════
+      let modalStudentIdx = -1;
+
+      function openModal(idx) {
+        const s = getStudents()[idx];
+        if (!s) return;
+        modalStudentIdx = idx;
+        document.getElementById("modal-student-info").innerHTML =
+          `<strong>${s.studentName}</strong> &nbsp;|&nbsp; ${s.fatherName} &nbsp;|&nbsp; ${s.course}` +
+          (s.receiptNo ? ` &nbsp;|&nbsp; Receipt: ${s.receiptNo}` : "");
+        document.getElementById("modal-total").value =
+          "₹ " + Number(s.totalFees).toLocaleString("en-IN");
+        document.getElementById("modal-prev-paid").value =
+          "₹ " + Number(s.feesPaid).toLocaleString("en-IN");
+        document.getElementById("modal-prev-due").value =
+          "₹ " + Number(s.feesDue).toLocaleString("en-IN");
+        document.getElementById("modal-new-payment").value = "";
+        const dueEl = document.getElementById("modal-new-due");
+        dueEl.textContent = "₹ " + Number(s.feesDue).toLocaleString("en-IN");
+        dueEl.className =
+          "modal-due-new" + (parseFloat(s.feesDue) === 0 ? " zero" : "");
+        document.getElementById("pay-modal").classList.add("open");
+      }
+
+      function closeModal() {
+        document.getElementById("pay-modal").classList.remove("open");
+        modalStudentIdx = -1;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  DELETE STUDENT
+      // ═══════════════════════════════════════════════
+      function deleteStudent(idx, studentName) {
+        const confirmDelete = confirm(
+          `Are you sure you want to delete ${studentName}?\n\nYeh action reverse nahi ho sakta!`,
+        );
+
+        if (!confirmDelete) return;
+
+        const students = getStudents();
+        if (idx < 0 || idx >= students.length) {
+          alert("❌ Student not found!");
+          return;
+        }
+
+        const deletedStudent = students[idx];
+        students.splice(idx, 1);
+        saveStudents(students);
+        refreshDashboard();
+
+        alert(`✅ ${deletedStudent.studentName} ka record delete ho gaya!`);
+
+        // Optionally sync deletion to Sheet
+        console.log("🗑 Student deleted:", deletedStudent);
+      }
+
+      function calcModalDue() {
+        const students = getStudents();
+        const s = students[modalStudentIdx];
+        if (!s) return;
+        const newPay =
+          parseFloat(document.getElementById("modal-new-payment").value) || 0;
+        const newDue = Math.max(0, parseFloat(s.feesDue) - newPay);
+        const el = document.getElementById("modal-new-due");
+        el.textContent = "₹ " + newDue.toLocaleString("en-IN");
+        el.className = "modal-due-new" + (newDue === 0 ? " zero" : "");
+      }
+
+      async function savePayment() {
+        const students = getStudents();
+        const s = students[modalStudentIdx];
+        if (!s) return;
+        const newPay =
+          parseFloat(document.getElementById("modal-new-payment").value) || 0;
+        if (newPay <= 0) {
+          alert("Payment amount daalo!");
+          return;
+        }
+
+        const newPaid = parseFloat(s.feesPaid) + newPay;
+        const newDue = Math.max(0, parseFloat(s.feesDue) - newPay);
+        students[modalStudentIdx] = {
+          ...s,
+          feesPaid: newPaid,
+          feesDue: newDue,
+        };
+        saveStudents(students);
+        closeModal();
+        refreshDashboard();
+
+        // ✅ FIX: Send correct POST format with action parameter
+        await syncToSheet({
+          action: "updateAdmission",
+          _rowIndex: modalStudentIdx + 2,
+          studentName: s.studentName,
+          fatherName: s.fatherName,
+          courseName: s.course,
+          duration: s.duration,
+          receiptNo: s.receiptNo,
+          totalFees: s.totalFees,
+          feesPaid: newPaid,
+          timestamp: new Date().toLocaleString("en-IN"),
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FEES DUE CALC (form)
+      // ═══════════════════════════════════════════════
+      function calcDue() {
+        const total =
+          parseFloat(document.getElementById("total-fees").value) || 0;
+        const paid =
+          parseFloat(document.getElementById("fees-paid").value) || 0;
+        const due = Math.max(0, total - paid);
+        const el = document.getElementById("due-display");
+        el.textContent = "₹ " + due.toLocaleString("en-IN");
+        el.className = "due-value" + (due === 0 ? " zero" : "");
+      }
+
+      // ═══════════════════════════════════════════════
+      //  LIVE CLOCK
+      // ═══════════════════════════════════════════════
+      (function startClock() {
+        const tick = () => {
+          document.getElementById("live-time").textContent =
+            new Date().toLocaleString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            });
+        };
+        tick();
+        setInterval(tick, 1000);
+      })();
+
+      // ═══════════════════════════════════════════════
+      //  VALIDATION
+      // ═══════════════════════════════════════════════
+      function setError(input, msg) {
+        input.classList.add("error");
+        let err = input.parentElement.querySelector(".field-error");
+        if (!err) {
+          err = document.createElement("span");
+          err.className = "field-error";
+          input.parentElement.appendChild(err);
+        }
+        err.textContent = msg;
+      }
+      function clearError(input) {
+        input.classList.remove("error");
+        const e = input.parentElement.querySelector(".field-error");
+        if (e) e.remove();
+      }
+      document
+        .querySelectorAll("#admission-form input")
+        .forEach((inp) => inp.addEventListener("input", () => clearError(inp)));
+
+      function validateForm(d) {
+        let valid = true;
+        [
+          {
+            el: document.getElementById("student-name"),
+            val: d.studentName,
+            msg: "Student name zaroori hai!",
+          },
+          {
+            el: document.getElementById("father-name"),
+            val: d.fatherName,
+            msg: "Father's name zaroori hai!",
+          },
+          {
+            el: document.getElementById("course-name"),
+            val: d.course,
+            msg: "Course name zaroori hai!",
+          },
+          {
+            el: document.getElementById("course-duration"),
+            val: d.duration,
+            msg: "Duration zaroori hai!",
+          },
+          {
+            el: document.getElementById("total-fees"),
+            val: d.totalFees > 0 ? "1" : "",
+            msg: "Total fees daalo!",
+          },
+          {
+            el: document.getElementById("fees-paid"),
+            val:
+              document.getElementById("fees-paid").value.trim() !== ""
+                ? "1"
+                : "",
+            msg: "Fees paid daalo (0 bhi chalega)!",
+          },
+        ].forEach((f) => {
+          if (!f.val || f.val.toString().trim() === "") {
+            setError(f.el, f.msg);
+            valid = false;
+          } else clearError(f.el);
+        });
+        return valid;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FILL PRINT COPIES
+      // ═══════════════════════════════════════════════
+      function fillReceipts(d) {
+        const paidDue =
+          "₹" +
+          Number(d.feesPaid).toLocaleString("en-IN") +
+          " / ₹" +
+          Number(d.feesDue).toLocaleString("en-IN");
+        [1, 2, 3].forEach((n) => {
+          document.getElementById(`c${n}-name`).textContent = d.studentName;
+          document.getElementById(`c${n}-father`).textContent = d.fatherName;
+          document.getElementById(`c${n}-course`).textContent = d.course;
+          document.getElementById(`c${n}-duration`).textContent = d.duration;
+          document.getElementById(`c${n}-fees`).textContent =
+            "₹ " + Number(d.totalFees).toLocaleString("en-IN");
+          document.getElementById(`c${n}-fees-due`).textContent = paidDue;
+          document.getElementById(`c${n}-datetime`).textContent = d.datetime;
+          document.getElementById(`c${n}-receipt-no`).textContent = d.receiptNo
+            ? "Receipt No: " + d.receiptNo
+            : "Receipt No: —";
+        });
+      }
+
+      // ═══════════════════════════════════════════════
+      //  GOOGLE SHEET SYNC — ✅ FIXED
+      // ═══════════════════════════════════════════════
+      function setSyncStatus(state, msg) {
+        const el = document.getElementById("sync-status");
+        el.className = "sync-status " + state;
+        document.getElementById("sync-msg").textContent = msg;
+      }
+
+      async function syncToSheet(payload) {
+        setSyncStatus("sending", "Google Sheet me save ho raha hai...");
+        try {
+          const response = await fetch(SHEET_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          console.log("✅ Sheet sync request sent:", payload);
+          setSyncStatus("success", "✅ Google Sheet me save ho gaya!");
+          setTimeout(() => setSyncStatus("idle", ""), 4000);
+        } catch (error) {
+          console.error("❌ Sync error:", error);
+          setSyncStatus(
+            "error",
+            "❌ Sheet me save nahi hua. Internet check karo.",
+          );
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FORM SUBMIT
+      // ═══════════════════════════════════════════════
+      document
+        .getElementById("admission-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const totalFees =
+            parseFloat(document.getElementById("total-fees").value) || 0;
+          const newPayment =
+            parseFloat(document.getElementById("fees-paid").value) || 0;
+
+          const formData = {
+            receiptNo: document.getElementById("receipt-no").value.trim(),
+            studentName: document.getElementById("student-name").value.trim(),
+            fatherName: document.getElementById("father-name").value.trim(),
+            course: document.getElementById("course-name").value.trim(),
+            duration: document.getElementById("course-duration").value.trim(),
+            totalFees,
+          };
+
+          if (!validateForm({ ...formData, feesPaid: newPayment })) return;
+
+          const students = getStudents();
+          const existingIdx = findStudent(formData, students);
+          const now = new Date().toLocaleString("en-IN", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+
+          let finalRecord;
+
+          if (existingIdx !== -1) {
+            // ── EXISTING student — sirf fees update karo ──
+            const existing = students[existingIdx];
+            const updatedPaid =
+              (parseFloat(existing.feesPaid) || 0) + newPayment;
+            const updatedDue = Math.max(
+              0,
+              (parseFloat(existing.totalFees) || totalFees) - updatedPaid,
+            );
+
+            finalRecord = {
+              ...existing,
+              feesPaid: updatedPaid,
+              feesDue: updatedDue,
+              datetime: now,
+            };
+            students[existingIdx] = finalRecord;
+
+            alert(
+              `✅ Record update ho gaya!\n` +
+                `Student: ${finalRecord.studentName}\n` +
+                `Total Paid: ₹${updatedPaid.toLocaleString("en-IN")}\n` +
+                `Remaining Due: ₹${updatedDue.toLocaleString("en-IN")}`,
+            );
+
+            // ✅ FIX: Send correct POST format
+            await syncToSheet({
+              action: "updateAdmission",
+              _rowIndex: existingIdx + 2,
+              studentName: finalRecord.studentName,
+              fatherName: finalRecord.fatherName,
+              courseName: finalRecord.course,
+              duration: finalRecord.duration,
+              receiptNo: finalRecord.receiptNo,
+              totalFees: finalRecord.totalFees,
+              feesPaid: finalRecord.feesPaid,
+              timestamp: now,
+            });
+          } else {
+            // ── NAYA student — fresh record add karo ──
+            const feesDue = Math.max(0, totalFees - newPayment);
+            finalRecord = {
+              ...formData,
+              feesPaid: newPayment,
+              feesDue,
+              datetime: now,
+            };
+            students.push(finalRecord);
+
+            // ✅ FIX: Send correct POST format
+            await syncToSheet({
+              action: "saveAdmission",
+              timestamp: now,
+              studentName: finalRecord.studentName,
+              fatherName: finalRecord.fatherName,
+              courseName: finalRecord.course,
+              duration: finalRecord.duration,
+              receiptNo: finalRecord.receiptNo,
+              totalFees: finalRecord.totalFees,
+              feesPaid: finalRecord.feesPaid,
+            });
+          }
+
+          saveStudents(students);
+          fillReceipts(finalRecord);
+          refreshDashboard();
+          setTimeout(() => window.print(), 150);
+
+          // Reset form
+          this.reset();
+          document.getElementById("due-display").textContent = "₹ 0";
+          document.getElementById("due-display").className = "due-value zero";
+        });
+
+      // ═══════════════════════════════════════════════
+      //  INIT
+      // ═══════════════════════════════════════════════
+      window.addEventListener("load", refreshDashboard);
+    </script>
+  </body>
+</html>

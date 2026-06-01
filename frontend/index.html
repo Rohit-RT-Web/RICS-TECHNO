@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RICS Technologies | Professional IT Institute</title>
+
+    <!-- Fonts & Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Link CSS here -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-logo-container">
+        <!-- Logo Image -->
+        <a href="admin.html" class="nav-logo">
+          <img src="logo.jpeg" alt="RICS Logo" class="nav-logo-img" />
+        </a>
+
+        <!-- Text Content -->
+        <div class="nav-text-wrapper">
+          <h2 class="nav-title">RICS Technologies</h2>
+          <span class="nav-tagline">Bright Future, Right Future</span>
+        </div>
+      </div>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#courses">Courses</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero" id="hero">
+      <div class="hero-content">
+        <h1>Empowering Your IT Career</h1>
+        <p>Dhampur's Premier Institute for Professional Computer Education.</p>
+        <button class="btn" onclick="openPopup()">Get Admission Now</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <section>
+      <h2 class="title">Our Achievements</h2>
+      <div class="stats">
+        <div class="stat">
+          <h3>12+</h3>
+          <p>Years Experience</p>
+        </div>
+        <div class="stat">
+          <h3>1000+</h3>
+          <p>Students Trained</p>
+        </div>
+        <div class="stat">
+          <h3>20+</h3>
+          <p>Pro Courses</p>
+        </div>
+      </div>
+    </section>
+    <!-- COURSES -->
+    <section id="courses">
+      <h2 class="title">Our Professional Courses</h2>
+
+      <div class="courses">
+        <!-- CCC -->
+        <div class="card">
+          <div class="card-icon">💻</div>
+          <h3>CCC</h3>
+          <p class="course-info">Duration: 3 Months | Level: Beginner</p>
+          <div class="price-container">
+            <span class="original-price">₹3,500</span>
+            <span class="discount-price">₹2,499</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Government Certified Computer Course</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- O Level -->
+        <div class="card">
+          <div class="card-icon">🎓</div>
+          <h3>O Level</h3>
+          <p class="course-info">Duration: 1 Year | Level: Advanced</p>
+          <div class="price-container">
+            <span class="original-price">₹15,000</span>
+            <span class="discount-price">₹12,000</span>
+            <span class="discount-badge">20% OFF</span>
+          </div>
+          <p>NIELIT Government Certification Program</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- DCA -->
+        <div class="card">
+          <div class="card-icon">🖥</div>
+          <h3>DCA</h3>
+          <p class="course-info">Duration: 6 Months | Level: Beginner</p>
+          <div class="price-container">
+            <span class="original-price">₹6,000</span>
+            <span class="discount-price">₹4,500</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Diploma in Computer Applications</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- ADCA -->
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h3>ADCA</h3>
+          <p class="course-info">Duration: 1 Year | Level: Advanced</p>
+          <div class="price-container">
+            <span class="original-price">₹12,000</span>
+            <span class="discount-price">₹8,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Advanced Diploma with Live Projects</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Tally Prime + GST -->
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Tally Prime + GST</h3>
+          <p class="course-info">Duration: 4 Months | Job Oriented</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Complete Accounting & Taxation Training</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Web Development -->
+        <div class="card">
+          <div class="card-icon">🌐</div>
+          <h3>Web Development</h3>
+          <p class="course-info">Duration: 6 Months | Live Projects</p>
+          <div class="price-container">
+            <span class="original-price">₹10,000</span>
+            <span class="discount-price">₹7,500</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>HTML, CSS, JavaScript & Website Projects</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Graphic Designing -->
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <h3>Graphic Designing</h3>
+          <p class="course-info">Duration: 4 Months | Creative Field</p>
+          <div class="price-container">
+            <span class="original-price">₹7,000</span>
+            <span class="discount-price">₹4,999</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Photoshop, CorelDraw & Canva</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Python Programming -->
+        <div class="card">
+          <div class="card-icon">🐍</div>
+          <h3>Python Programming</h3>
+          <p class="course-info">Duration: 5 Months | Coding</p>
+          <div class="price-container">
+            <span class="original-price">₹9,000</span>
+            <span class="discount-price">₹6,499</span>
+            <span class="discount-badge">28% OFF</span>
+          </div>
+          <p>Programming from Basic to Advanced</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Digital Marketing -->
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3>Digital Marketing</h3>
+          <p class="course-info">Duration: 3 Months | Online Career</p>
+          <div class="price-container">
+            <span class="original-price">₹6,000</span>
+            <span class="discount-price">₹3,999</span>
+            <span class="discount-badge">33% OFF</span>
+          </div>
+          <p>SEO, Social Media & Google Ads</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Typing Course -->
+        <div class="card">
+          <div class="card-icon">⌨</div>
+          <h3>Typing Course</h3>
+          <p class="course-info">Duration: 2 Months | Practice Based</p>
+          <div class="price-container">
+            <span class="original-price">₹2,000</span>
+            <span class="discount-price">₹1,200</span>
+            <span class="discount-badge">40% OFF</span>
+          </div>
+          <p>Hindi & English Typing Training</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Hardware & Networking -->
+        <div class="card">
+          <div class="card-icon">🔧</div>
+          <h3>Hardware & Networking</h3>
+          <p class="course-info">Duration: 6 Months | Technical</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,500</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Computer Repairing & Networking</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+        <!-- C & C++ Programming -->
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>C & C++ Programming</h3>
+          <p class="course-info">Duration: 4 Months | Foundation</p>
+          <div class="price-container">
+            <span class="original-price">₹5,000</span>
+            <span class="discount-price">₹3,499</span>
+            <span class="discount-badge">30% OFF</span>
+          </div>
+          <p>Learn Logic Building with C and OOPs with C++</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Core & Advanced Java -->
+        <div class="card">
+          <div class="card-icon">☕</div>
+          <h3>Java (Core + Advanced)</h3>
+          <p class="course-info">Duration: 6 Months | Backend</p>
+          <div class="price-container">
+            <span class="original-price">₹12,000</span>
+            <span class="discount-price">₹8,500</span>
+            <span class="discount-badge">29% OFF</span>
+          </div>
+          <p>Complete Java, Servlets, JSP & Frameworks</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- Data Structures & Algorithms -->
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Data Structures (DSA)</h3>
+          <p class="course-info">Duration: 3 Months | Interview Prep</p>
+          <div class="price-container">
+            <span class="original-price">₹8,000</span>
+            <span class="discount-price">₹5,999</span>
+            <span class="discount-badge">25% OFF</span>
+          </div>
+          <p>Master Algorithms & Problem Solving Skills</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+
+        <!-- MySQL Database -->
+        <div class="card">
+          <div class="card-icon">🗄️</div>
+          <h3>MySQL Database</h3>
+          <p class="course-info">Duration: 2 Months | Database</p>
+          <div class="price-container">
+            <span class="original-price">₹4,000</span>
+            <span class="discount-price">₹2,499</span>
+            <span class="discount-badge">37% OFF</span>
+          </div>
+          <p>SQL Queries, Database Design & Management</p>
+          <br />
+          <a href="javascript:void(0)" onclick="openPopup()" class="enroll-btn"
+            >Enroll Now</a
+          >
+        </div>
+      </div>
+    </section>
+    <!-- GALLERY -->
+    <section id="gallery">
+      <h2 class="title">Campus Gallery</h2>
+      <div class="gallery">
+        <img
+          src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
+        />
+        <img
+          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c"
+        />
+      </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <div class="testimonial">
+      <h2>What Our Students Say</h2>
+      <p>
+        "Best institute in Dhampur for practical IT training and career growth."
+      </p>
+    </div>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="premium-contact">
+      <h2 class="title" style="color: #fff">Let’s Connect</h2>
+      <div class="contact-container">
+        <div class="contact-form-box">
+          <h3>Send Us Message</h3>
+          <br />
+          <form id="contact-form">
+            <div class="input-group">
+              <i class="fa fa-user"></i>
+              <input type="text" name="Name" placeholder="Your Name" required />
+            </div>
+            <div class="input-group">
+              <i class="fa fa-envelope"></i>
+              <input
+                type="email"
+                name="Email"
+                placeholder="Your Email"
+                required
+              />
+            </div>
+            <div class="input-group textarea">
+              <i class="fa fa-message"></i>
+              <textarea
+                name="Message"
+                placeholder="Your Message"
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              id="contact-submit-btn"
+              class="btn"
+              style="width: 100%"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <div class="contact-info-box">
+          <div class="info-card">
+            <i class="fa fa-location-dot"></i>
+            <div>
+              <h4>Address</h4>
+              <p>
+                <a
+                  href="https://maps.app.goo.gl/mEq5Cb1r4C9tbpVVA"
+                  target="_blank"
+                  style="color: #fff"
+                >
+                  <b>RICS Computer Training Center</b>
+                  <br />
+                  2nd Floor, Rajendra Tower, SDM Court,
+                  <br />
+                  Noorpur Road, Dhampur (U.P.)</a
+                >
+              </p>
+            </div>
+          </div>
+          <div class="info-card">
+            <i class="fa fa-envelope"></i>
+            <div>
+              <h4>Email</h4>
+
+              <a href="mailto:info@ricstech.online" style="color: #fff"
+                ><p>info@ricstech.online></p></a
+              >
+            </div>
+          </div>
+          <div class="info-card">
+            <i class="fa fa-phone"></i>
+            <div>
+              <h4>Call Us</h4>
+              <p>
+                <a href="tel:+91 9719434222" style="color: #fff"
+                  >+91 9719434222</a
+                ><br /><a href="tel:+91 9411232073" style="color: #fff"
+                  >+91 9411232073</a
+                >
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://wa.me/919411232073"
+            class="btn"
+            style="background: #25d366; color: #fff"
+            ><p class="fa-brands fa-whatsapp"></p>
+            WhatsApp Us</a
+          >
+        </div>
+      </div>
+
+      <div class="map-section">
+        <iframe
+          src="https://www.google.com/maps?q=RICS TECHNOLOGIES&output=embed"
+          width="100%"
+          height="100%"
+          style="border: 0"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </section>
+
+    <footer>&copy; 2026 RICS Technologies | All Rights Reserved</footer>
+
+    <!-- WHATSAPP FLOAT -->
+    <a href="https://wa.me/919411232073" class="whatsapp" target="_blank"
+      ><i class="fab fa-whatsapp"></i
+    ></a>
+
+    <!-- UPDATE KIYA HUA POPUP -->
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Admission Form</h3>
+        <br />
+        <!-- Form Tag Add Kiya -->
+        <form id="admission-form">
+          <div class="input-group" style="border: 1px solid #ddd">
+            <input type="text" name="Name" placeholder="Full Name" required />
+          </div>
+          <!-- YAHAN DROPDOWN HAI -->
+          <div class="input-group" style="border: 1px solid #ddd">
+            <select
+              name="Course"
+              required
+              style="
+                width: 100%;
+                border: none;
+                outline: none;
+                background: transparent;
+              "
+            >
+              <option value="" disabled selected>Select Course</option>
+              <option value="CCC">CCC</option>
+              <option value="O Level">O Level</option>
+              <option value="DCA">DCA</option>
+              <option value="ADCA">ADCA</option>
+              <option value="Tally Prime + GST">Tally Prime + GST</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Graphic Designing">Graphic Designing</option>
+              <option value="Python Programming">Python Programming</option>
+              <option value="Digital Marketing">Digital Marketing</option>
+              <option value="Typing Course">Typing Course</option>
+              <option value="Hardware & Networking">
+                Hardware & Networking
+              </option>
+              <option value="C & C++">C & C++ Programming</option>
+              <option value="Java Full Stack">Java (Core + Adv)</option>
+              <option value="DSA">Data Structures (DSA)</option>
+              <option value="MySQL">MySQL Database</option>
+            </select>
+          </div>
+          <div class="input-group" style="border: 1px solid #ddd">
+            <input
+              type="text"
+              name="Mobile"
+              placeholder="Mobile Number"
+              required
+            />
+          </div>
+          <button type="submit" class="btn" id="submit-btn" style="width: 100%">
+            Submit Inquiry
+          </button>
+        </form>
+        <p id="msg" style="margin-top: 10px; color: green; display: none">
+          Details Sent Successfully!
+        </p>
+      </div>
+    </div>
+
+    <!-- Link JS here -->
+    <script src="script.js"></script>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  </body>
+</html>
